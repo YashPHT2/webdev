@@ -1,4 +1,4 @@
-# Assessli - Smart Academic Mentor
+# Smart Academic Mentor
 
 An AI-powered academic mentoring application with a responsive front-end interface and Node.js/Express backend with MongoDB.
 
