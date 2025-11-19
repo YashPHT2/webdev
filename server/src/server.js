@@ -1,8 +1,10 @@
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const datastore = require('./datastore');
+const connectDB = require('./config/database');
 const requestLogger = require('./middleware/requestLogger');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -16,9 +18,38 @@ const analyticsRoutes = require('./routes/analyticsRoutes');
 const assessmentsRoutes = require('./routes/assessmentsRoutes');
 const subjectRoutes = require('./routes/subjectRoutes');
 const eventRoutes = require('./routes/eventRoutes');
+const viewRoutes = require('./routes/viewRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const projectRoot = path.resolve(__dirname, '..', '..');
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+app.use('/public', express.static(path.join(projectRoot, 'public')));
+app.get('/styles.css', (req, res) => res.sendFile(path.join(projectRoot, 'styles.css')));
+app.get('/script.js', (req, res) => res.sendFile(path.join(projectRoot, 'script.js')));
+
+const legacyPages = [
+  'ai-mentor.html',
+  'analytics.html',
+  'api-stub.html',
+  'assessment.html',
+  'assignments.html',
+  'calendar.html',
+  'learning-path.html',
+  'progress.html',
+  'subjects.html',
+  'timetable.html'
+];
+
+legacyPages.forEach((page) => {
+  app.get(`/${page}`, (req, res) => {
+    res.sendFile(path.join(projectRoot, page));
+  });
+});
 
 // Trust proxy (for correct rate-limit IPs behind proxies). Accept numeric or boolean-like env.
 const trustProxyEnv = process.env.TRUST_PROXY;
@@ -48,24 +79,26 @@ app.use(limiter);
 
 app.use(requestLogger);
 
-app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Assessli Smart Academic Mentor API',
-    version: '1.0.0',
-    endpoints: {
-      tasks: '/api/tasks',
-      subjects: '/api/subjects',
-      events: '/api/events',
-      chat: '/api/chat',
-      studyPlan: '/api/study-plan',
-      studyPlans: '/api/study-plans',
-      motivation: '/api/motivation',
-      timetable: '/api/timetable',
-      analytics: '/api/analytics',
-      assessments: '/api/assessments'
-    }
-  });
+const apiSummary = {
+  success: true,
+  message: 'Assessli Smart Academic Mentor API',
+  version: '1.0.0',
+  endpoints: {
+    tasks: '/api/tasks',
+    subjects: '/api/subjects',
+    events: '/api/events',
+    chat: '/api/chat',
+    studyPlan: '/api/study-plan',
+    studyPlans: '/api/study-plans',
+    motivation: '/api/motivation',
+    timetable: '/api/timetable',
+    analytics: '/api/analytics',
+    assessments: '/api/assessments'
+  }
+};
+
+app.get('/api', (req, res) => {
+  res.json(apiSummary);
 });
 
 app.get('/api/health', (req, res) => {
@@ -92,7 +125,13 @@ app.use('/api/timetable', timetableRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/assessments', assessmentsRoutes);
 
+app.use('/', authRoutes);
+app.use('/', viewRoutes);
+
 app.use((req, res) => {
+  if (req.accepts('html')) {
+    return res.status(404).sendFile(path.join(projectRoot, '404.html'));
+  }
   res.status(404).json({
     success: false,
     message: 'Route not found'
@@ -103,6 +142,7 @@ app.use(errorHandler);
 
 async function start() {
   try {
+    await connectDB();
     await datastore.init({ dataDir: process.env.DATA_DIR });
     await datastore.refreshAll();
 
