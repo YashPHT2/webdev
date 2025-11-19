@@ -1,79 +1,33 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    minlength: 3,
-    maxlength: 50
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    lowercase: true,
-    match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email address']
-  },
-  password: {
-    type: String,
-    required: true,
-    minlength: 6
-  },
-  firstName: {
-    type: String,
-    trim: true,
-    maxlength: 50
-  },
-  lastName: {
-    type: String,
-    trim: true,
-    maxlength: 50
-  },
-  avatar: {
-    type: String,
-    default: ''
-  },
-  preferences: {
-    theme: {
+const userSchema = new mongoose.Schema(
+  {
+    name: {
       type: String,
-      enum: ['light', 'dark', 'auto'],
-      default: 'auto'
+      required: true,
+      trim: true,
+      minlength: 2,
+      maxlength: 120
     },
-    notifications: {
-      type: Boolean,
-      default: true
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address']
     },
-    studyReminders: {
-      type: Boolean,
-      default: true
+    password: {
+      type: String,
+      required: true,
+      minlength: 6
     }
   },
-  stats: {
-    tasksCompleted: {
-      type: Number,
-      default: 0
-    },
-    studyHours: {
-      type: Number,
-      default: 0
-    },
-    streak: {
-      type: Number,
-      default: 0
-    },
-    lastActive: {
-      type: Date,
-      default: Date.now
-    }
+  {
+    timestamps: true
   }
-}, {
-  timestamps: true
-});
+);
 
-userSchema.index({ email: 1 });
-userSchema.index({ username: 1 });
+userSchema.index({ email: 1 }, { unique: true });
 
 module.exports = mongoose.model('User', userSchema);

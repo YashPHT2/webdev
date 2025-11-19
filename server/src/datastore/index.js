@@ -26,7 +26,7 @@ const state = {
   dataDir: null,
   cache: new Map(), // collection -> data
   initialized: false,
-  knownCollections: ['tasks', 'subjects', 'timetable', 'events', 'users', 'chat', 'assessments']
+  knownCollections: ['tasks', 'subjects', 'timetable', 'events', 'chat', 'assessments']
 };
 
 const getDataDir = () => {
