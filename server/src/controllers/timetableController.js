@@ -1,108 +1,67 @@
-const datastore = require('../datastore');
+const TimetableBlock = require('../models/TimetableBlock');
 
-function isValidTime(t) {
-  return typeof t === 'string' && /^([01]\d|2[0-3]):[0-5]\d$/.test(t);
-}
-
-function validateTimetablePayload(payload) {
-  const errors = [];
-  if (payload == null || typeof payload !== 'object' || Array.isArray(payload)) {
-    errors.push({ field: 'root', message: 'Payload must be an object' });
-    return { valid: false, errors };
-  }
-  if (payload.days != null && typeof payload.days !== 'object') {
-    errors.push({ field: 'days', message: 'days must be an object keyed by weekday' });
-  }
-  if (payload.days && typeof payload.days === 'object') {
-    for (const [day, blocks] of Object.entries(payload.days)) {
-      if (!Array.isArray(blocks)) {
-        errors.push({ field: `days.${day}`, message: 'Each day must be an array of blocks' });
-        continue;
-      }
-      blocks.forEach((b, idx) => {
-        if (!b || typeof b !== 'object') {
-          errors.push({ field: `days.${day}[${idx}]`, message: 'Block must be an object' });
-          return;
-        }
-        if (b.subject != null && typeof b.subject !== 'string') {
-          errors.push({ field: `days.${day}[${idx}].subject`, message: 'subject must be a string' });
-        }
-        if (b.start != null && !isValidTime(b.start)) {
-          errors.push({ field: `days.${day}[${idx}].start`, message: 'start must be HH:MM (24h)' });
-        }
-        if (b.end != null && !isValidTime(b.end)) {
-          errors.push({ field: `days.${day}[${idx}].end`, message: 'end must be HH:MM (24h)' });
-        }
-        if (b.start && b.end && isValidTime(b.start) && isValidTime(b.end)) {
-          const [sh, sm] = b.start.split(':').map(Number);
-          const [eh, em] = b.end.split(':').map(Number);
-          const s = sh * 60 + sm; const e = eh * 60 + em;
-          if (e <= s) {
-            errors.push({ field: `days.${day}[${idx}].end`, message: 'end must be after start' });
-          }
-        }
-        if (b.color != null && typeof b.color !== 'string') {
-          errors.push({ field: `days.${day}[${idx}].color`, message: 'color must be a string' });
-        }
-      });
-    }
-  }
-  return { valid: errors.length === 0, errors };
-}
-
-const timetableController = {
-  getTimetable: async (req, res) => {
-    try {
-      const current = datastore.get('timetable');
-      const timetable = current || { version: 1, weekStart: new Date().toISOString(), days: {}, updatedAt: new Date().toISOString() };
-      res.json({
-        success: true,
-        message: 'Timetable retrieved successfully',
-        data: timetable
-      });
-    } catch (error) {
-      res.status(500).json({ success: false, message: 'Error retrieving timetable', error: error.message });
-    }
-  },
-
-  upsertTimetable: async (req, res) => {
-    try {
-      const payload = req.body || {};
-      const { valid, errors } = validateTimetablePayload(payload);
-      if (!valid) {
-        return res.status(400).json({ success: false, message: 'Invalid timetable payload', errors });
-      }
-
-      let saved = null;
-      let conflict = false;
-
-      await datastore.update('timetable', (current) => {
-        const base = current || { version: 1, weekStart: new Date().toISOString(), days: {}, updatedAt: new Date().toISOString() };
-        const clientVersion = typeof payload.version === 'number' ? payload.version : null;
-        if (clientVersion != null && clientVersion !== base.version) {
-          conflict = true;
-          return base; // no change
-        }
-        const next = {
-          version: (base.version || 0) + 1,
-          weekStart: payload.weekStart || base.weekStart || new Date().toISOString(),
-          days: payload.days ? payload.days : (base.days || {}),
-          updatedAt: new Date().toISOString()
-        };
-        saved = next;
-        return next;
-      });
-
-      if (conflict) {
-        const latest = datastore.get('timetable');
-        return res.status(409).json({ success: false, conflict: true, message: 'Version conflict', data: latest });
-      }
-
-      res.json({ success: true, message: 'Timetable saved successfully', data: saved });
-    } catch (error) {
-      res.status(500).json({ success: false, message: 'Error saving timetable', error: error.message });
-    }
+exports.getTimetable = async (req, res) => {
+  try {
+    const blocks = await TimetableBlock.find();
+    res.json(blocks);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
-module.exports = timetableController;
+exports.createBlock = async (req, res) => {
+  console.log('Received createBlock request:', req.body);
+  const block = new TimetableBlock({
+    day: req.body.day,
+    startTime: req.body.startTime,
+    endTime: req.body.endTime,
+    subject: req.body.subject,
+    location: req.body.location,
+    notes: req.body.notes,
+    color: req.body.color
+  });
+
+  try {
+    const newBlock = await block.save();
+    console.log('Block saved successfully:', newBlock);
+    res.status(201).json(newBlock);
+  } catch (error) {
+    console.error('Error saving block:', error);
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.updateBlock = async (req, res) => {
+  try {
+    const block = await TimetableBlock.findById(req.params.id);
+    if (!block) {
+      return res.status(404).json({ message: 'Block not found' });
+    }
+
+    if (req.body.day) block.day = req.body.day;
+    if (req.body.startTime) block.startTime = req.body.startTime;
+    if (req.body.endTime) block.endTime = req.body.endTime;
+    if (req.body.subject) block.subject = req.body.subject;
+    if (req.body.location !== undefined) block.location = req.body.location;
+    if (req.body.notes !== undefined) block.notes = req.body.notes;
+    if (req.body.color) block.color = req.body.color;
+
+    const updatedBlock = await block.save();
+    res.json(updatedBlock);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.deleteBlock = async (req, res) => {
+  try {
+    const block = await TimetableBlock.findById(req.params.id);
+    if (!block) {
+      return res.status(404).json({ message: 'Block not found' });
+    }
+    await block.deleteOne();
+    res.json({ message: 'Block deleted' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

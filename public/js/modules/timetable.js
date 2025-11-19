@@ -6,81 +6,8 @@
 
   const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
   const DAY_LABELS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  
-  // Sample data - replace with API calls later
-  let timetableBlocks = [
-    {
-      id: 'block-1',
-      day: 'monday',
-      subject: 'Calculus',
-      startTime: '09:00',
-      endTime: '10:30',
-      location: 'Room 301',
-      notes: 'Bring calculator',
-      color: '#3b82f6'
-    },
-    {
-      id: 'block-2',
-      day: 'monday',
-      subject: 'Physics',
-      startTime: '11:00',
-      endTime: '12:30',
-      location: 'Lab 2',
-      notes: '',
-      color: '#10b981'
-    },
-    {
-      id: 'block-3',
-      day: 'tuesday',
-      subject: 'English Literature',
-      startTime: '10:00',
-      endTime: '11:30',
-      location: 'Room 205',
-      notes: '',
-      color: '#f59e0b'
-    },
-    {
-      id: 'block-4',
-      day: 'wednesday',
-      subject: 'Chemistry',
-      startTime: '09:00',
-      endTime: '10:30',
-      location: 'Lab 1',
-      notes: 'Lab coat required',
-      color: '#8b5cf6'
-    },
-    {
-      id: 'block-5',
-      day: 'wednesday',
-      subject: 'Mathematics',
-      startTime: '14:00',
-      endTime: '15:30',
-      location: 'Room 204',
-      notes: '',
-      color: '#ec4899'
-    },
-    {
-      id: 'block-6',
-      day: 'thursday',
-      subject: 'History',
-      startTime: '14:00',
-      endTime: '15:30',
-      location: 'Room 102',
-      notes: '',
-      color: '#ef4444'
-    },
-    {
-      id: 'block-7',
-      day: 'friday',
-      subject: 'Computer Science',
-      startTime: '10:00',
-      endTime: '12:00',
-      location: 'Lab 3',
-      notes: 'Laptop required',
-      color: '#06b6d4'
-    }
-  ];
 
+  let timetableBlocks = [];
   let currentDensity = 'expanded';
   let currentFilter = { day: 'all', subject: '' };
   let editingBlockId = null;
@@ -91,8 +18,20 @@
       if (!container) return;
 
       this.setupEventListeners();
-      this.render();
+      this.fetchTimetable(); // Fetch from API
       this.updateTodayBadge();
+    },
+
+    async fetchTimetable() {
+      try {
+        const response = await fetch('/api/timetable');
+        if (!response.ok) throw new Error('Failed to fetch timetable');
+        timetableBlocks = await response.json();
+        this.render();
+      } catch (error) {
+        console.error('Error fetching timetable:', error);
+        this.showToast('Failed to load timetable', 'error');
+      }
     },
 
     setupEventListeners() {
@@ -167,7 +106,7 @@
       if (grid) {
         grid.dataset.density = density;
       }
-      
+
       // Update button states
       document.querySelectorAll('#timetable-density-toggle .progress-view-toggle__button').forEach(btn => {
         if (btn.dataset.density === density) {
@@ -187,8 +126,8 @@
       grid.innerHTML = '';
       grid.dataset.density = currentDensity;
 
-      const filteredDays = currentFilter.day === 'all' 
-        ? DAYS 
+      const filteredDays = currentFilter.day === 'all'
+        ? DAYS
         : [currentFilter.day];
 
       filteredDays.forEach((day, index) => {
@@ -201,6 +140,23 @@
       const column = document.createElement('div');
       column.className = 'day-column';
       column.dataset.day = day;
+
+      // Drag and Drop: Allow dropping on the column
+      column.addEventListener('dragover', (e) => {
+        e.preventDefault(); // Necessary to allow dropping
+        column.classList.add('drag-over');
+      });
+
+      column.addEventListener('dragleave', () => {
+        column.classList.remove('drag-over');
+      });
+
+      column.addEventListener('drop', (e) => {
+        e.preventDefault();
+        column.classList.remove('drag-over');
+        const blockId = e.dataTransfer.getData('text/plain');
+        this.handleDrop(blockId, day);
+      });
 
       // Header
       const header = document.createElement('div');
@@ -225,7 +181,7 @@
       blocksContainer.className = 'day-blocks';
 
       const dayBlocks = this.getFilteredBlocks(day);
-      
+
       if (dayBlocks.length === 0) {
         blocksContainer.innerHTML = `
           <div class="empty-state--small">
@@ -254,10 +210,21 @@
     createBlockElement(block) {
       const el = document.createElement('div');
       el.className = 'time-block';
-      el.dataset.blockId = block.id;
+      el.dataset.blockId = block._id; // Use MongoDB _id
       el.tabIndex = 0;
       el.setAttribute('role', 'button');
       el.setAttribute('aria-label', `${block.subject} from ${block.startTime} to ${block.endTime}`);
+      el.setAttribute('draggable', 'true'); // Enable dragging
+
+      // Drag Events
+      el.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', block._id);
+        el.classList.add('dragging');
+      });
+
+      el.addEventListener('dragend', () => {
+        el.classList.remove('dragging');
+      });
 
       // Calculate duration for visual sizing
       const duration = this.calculateDuration(block.startTime, block.endTime);
@@ -310,28 +277,54 @@
       // Event listeners
       el.addEventListener('click', (e) => {
         if (!e.target.closest('[data-action]')) {
-          this.openBlockModal(block.id);
+          this.openBlockModal(block._id);
         }
       });
 
       el.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          this.openBlockModal(block.id);
+          this.openBlockModal(block._id);
         }
       });
 
       el.querySelector('[data-action="edit"]').addEventListener('click', (e) => {
         e.stopPropagation();
-        this.openBlockModal(block.id);
+        this.openBlockModal(block._id);
       });
 
       el.querySelector('[data-action="delete"]').addEventListener('click', (e) => {
         e.stopPropagation();
-        this.confirmDelete(block.id);
+        this.confirmDelete(block._id);
       });
 
       return el;
+    },
+
+    async handleDrop(blockId, newDay) {
+      const block = timetableBlocks.find(b => b._id === blockId);
+      if (!block || block.day === newDay) return;
+
+      // Optimistic update
+      const originalDay = block.day;
+      block.day = newDay;
+      this.render();
+
+      try {
+        const response = await fetch(`/api/timetable/${blockId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ day: newDay })
+        });
+
+        if (!response.ok) throw new Error('Failed to update block');
+        this.showToast('Block moved successfully', 'success');
+      } catch (error) {
+        console.error('Error moving block:', error);
+        block.day = originalDay; // Revert
+        this.render();
+        this.showToast('Failed to move block', 'error');
+      }
     },
 
     calculateDuration(startTime, endTime) {
@@ -344,16 +337,16 @@
 
     getFilteredBlocks(day) {
       let blocks = timetableBlocks.filter(b => b.day === day);
-      
+
       if (currentFilter.subject) {
-        blocks = blocks.filter(b => 
+        blocks = blocks.filter(b =>
           b.subject.toLowerCase().includes(currentFilter.subject)
         );
       }
 
       // Sort by start time
       blocks.sort((a, b) => a.startTime.localeCompare(b.startTime));
-      
+
       return blocks;
     },
 
@@ -362,16 +355,16 @@
       const modal = document.getElementById('timetable-block-modal');
       const overlay = document.getElementById('task-modal-overlay');
       const form = document.getElementById('timetable-block-form');
-      
+
       if (!modal || !form) return;
 
       const title = modal.querySelector('#timetable-block-title');
       title.textContent = blockId ? 'Edit Time Block' : 'Add Time Block';
 
       if (blockId) {
-        const block = timetableBlocks.find(b => b.id === blockId);
+        const block = timetableBlocks.find(b => b._id === blockId);
         if (block) {
-          document.getElementById('block-form-id').value = block.id;
+          document.getElementById('block-form-id').value = block._id;
           document.getElementById('block-form-day').value = block.day;
           document.getElementById('block-form-subject').value = block.subject;
           document.getElementById('block-form-start').value = block.startTime;
@@ -393,7 +386,7 @@
       modal.classList.add('active');
       overlay?.removeAttribute('hidden');
       overlay?.classList.add('active');
-      
+
       // Focus first input
       setTimeout(() => document.getElementById('block-form-subject')?.focus(), 100);
     },
@@ -401,22 +394,21 @@
     closeModal(modalId) {
       const modal = document.getElementById(modalId);
       const overlay = document.getElementById('task-modal-overlay');
-      
+
       if (modal) {
         modal.classList.remove('active');
         setTimeout(() => modal.setAttribute('hidden', ''), 300);
       }
-      
+
       if (overlay) {
         overlay.classList.remove('active');
         setTimeout(() => overlay.setAttribute('hidden', ''), 300);
       }
     },
 
-    saveBlock() {
+    async saveBlock() {
       const id = document.getElementById('block-form-id').value;
-      const block = {
-        id: id || `block-${Date.now()}`,
+      const blockData = {
         day: document.getElementById('block-form-day').value,
         subject: document.getElementById('block-form-subject').value,
         startTime: document.getElementById('block-form-start').value,
@@ -426,25 +418,41 @@
         color: document.getElementById('block-form-color').value
       };
 
-      if (id) {
-        const index = timetableBlocks.findIndex(b => b.id === id);
-        if (index !== -1) {
-          timetableBlocks[index] = block;
+      try {
+        let response;
+        if (id) {
+          response = await fetch(`/api/timetable/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(blockData)
+          });
+        } else {
+          response = await fetch('/api/timetable', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(blockData)
+          });
         }
-      } else {
-        timetableBlocks.push(block);
-      }
 
-      this.closeModal('timetable-block-modal');
-      this.render();
-      this.showToast(id ? 'Block updated' : 'Block added', 'success');
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to save block');
+        }
+
+        await this.fetchTimetable(); // Refresh data
+        this.closeModal('timetable-block-modal');
+        this.showToast(id ? 'Block updated' : 'Block added', 'success');
+      } catch (error) {
+        console.error('Error saving block:', error);
+        this.showToast(error.message, 'error');
+      }
     },
 
     confirmDelete(blockId) {
       editingBlockId = blockId;
       const modal = document.getElementById('timetable-delete-modal');
       const overlay = document.getElementById('task-modal-overlay');
-      
+
       if (modal) {
         modal.removeAttribute('hidden');
         modal.classList.add('active');
@@ -455,11 +463,21 @@
       }
     },
 
-    deleteBlock(blockId) {
-      timetableBlocks = timetableBlocks.filter(b => b.id !== blockId);
-      this.closeModal('timetable-delete-modal');
-      this.render();
-      this.showToast('Block deleted', 'success');
+    async deleteBlock(blockId) {
+      try {
+        const response = await fetch(`/api/timetable/${blockId}`, {
+          method: 'DELETE'
+        });
+
+        if (!response.ok) throw new Error('Failed to delete block');
+
+        await this.fetchTimetable(); // Refresh data
+        this.closeModal('timetable-delete-modal');
+        this.showToast('Block deleted', 'success');
+      } catch (error) {
+        console.error('Error deleting block:', error);
+        this.showToast('Failed to delete block', 'error');
+      }
     },
 
     updateTodayBadge() {
@@ -468,7 +486,7 @@
 
       const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
       const dayIndex = DAYS.indexOf(today);
-      
+
       if (dayIndex !== -1) {
         badge.textContent = `Today: ${DAY_LABELS[dayIndex]}`;
       }
@@ -481,9 +499,9 @@
       const toast = document.createElement('div');
       toast.className = `toast toast--${type}`;
       toast.textContent = message;
-      
+
       container.appendChild(toast);
-      
+
       setTimeout(() => {
         toast.style.animation = 'fadeOut 0.3s ease-out';
         setTimeout(() => toast.remove(), 300);

@@ -9,14 +9,14 @@ class ProgressTracker {
     this.tasks = [];
     this.analytics = null;
     this.charts = {};
-    
+
     console.log('📊 Progress Tracker initializing...');
     this.init();
   }
 
   async init() {
     this.cacheElements();
-    
+
     if (!this.elements.canvas) {
       console.error('❌ Progress canvas not found!');
       return;
@@ -32,7 +32,7 @@ class ProgressTracker {
     this.attachEventListeners();
     await this.loadData();
     this.render();
-    
+
     console.log('✅ Progress Tracker initialized');
   }
 
@@ -41,7 +41,7 @@ class ProgressTracker {
       canvas: document.getElementById('progressGraphCanvas'),
       viewButtons: document.querySelectorAll('.progress-view-toggle__button'),
       summaryItems: document.querySelectorAll('.progress-summary__value'),
-      
+
       // Summary specific elements
       completedValue: document.querySelector('.progress-summary__item:nth-child(1) .progress-summary__value'),
       inProgressValue: document.querySelector('.progress-summary__item:nth-child(2) .progress-summary__value'),
@@ -77,7 +77,7 @@ class ProgressTracker {
 
       this.tasks = tasks;
       this.analytics = analytics;
-      
+
       console.log('📊 Loaded data:', {
         tasks: this.tasks.length,
         analytics: !!this.analytics
@@ -175,7 +175,7 @@ class ProgressTracker {
   getTasksCompletedInMonth(date) {
     const year = date.getFullYear();
     const month = date.getMonth();
-    
+
     return this.tasks.filter(t => {
       if (!t.updatedAt || t.status !== 'completed') return false;
       const updated = new Date(t.updatedAt);
@@ -185,17 +185,17 @@ class ProgressTracker {
 
   calculateAverageScore() {
     if (this.tasks.length === 0) return 0;
-    
+
     const totalProgress = this.tasks.reduce((sum, task) => {
       return sum + (task.progress || 0);
     }, 0);
-    
+
     return Math.round(totalProgress / this.tasks.length);
   }
 
   getSubjectBreakdown() {
     const breakdown = {};
-    
+
     this.tasks.forEach(task => {
       const subject = task.subject || 'Uncategorized';
       if (!breakdown[subject]) {
@@ -205,7 +205,7 @@ class ProgressTracker {
           progress: 0
         };
       }
-      
+
       breakdown[subject].total++;
       if (task.status === 'completed' || task.progress === 100) {
         breakdown[subject].completed++;
@@ -232,15 +232,15 @@ class ProgressTracker {
     if (!this.analytics) return;
 
     const completion = this.analytics.completion;
-    
+
     if (this.elements.completedValue) {
       this.elements.completedValue.textContent = completion.completed;
     }
-    
+
     if (this.elements.inProgressValue) {
       this.elements.inProgressValue.textContent = completion.inProgress;
     }
-    
+
     if (this.elements.avgScoreValue) {
       this.elements.avgScoreValue.textContent = `${this.analytics.averageScore}%`;
     }
@@ -250,14 +250,14 @@ class ProgressTracker {
     if (!this.elements.canvas || !this.analytics) return;
 
     const ctx = this.elements.canvas.getContext('2d');
-    
+
     // Destroy existing chart
     if (this.charts.progress) {
       this.charts.progress.destroy();
     }
 
     const chartData = this.getChartData();
-    
+
     this.charts.progress = new Chart(ctx, {
       type: 'line',
       data: {
@@ -363,19 +363,19 @@ class ProgressTracker {
   generateDayLabels(days) {
     const labels = [];
     const now = new Date();
-    
+
     for (let i = days - 1; i >= 0; i--) {
       const date = new Date(now);
       date.setDate(date.getDate() - i);
       labels.push(date.getDate());
     }
-    
+
     return labels;
   }
 
   switchView(view) {
     this.currentView = view;
-    
+
     // Update button states
     this.elements.viewButtons?.forEach(btn => {
       const isActive = btn.dataset.view === view;
@@ -390,12 +390,37 @@ class ProgressTracker {
   showLoading() {
     if (this.elements.canvas) {
       const container = this.elements.canvas.parentElement;
-      container.innerHTML = '<div class="loading-spinner">Loading progress data...</div>';
+      // Check if loader already exists
+      let loader = container.querySelector('.loading-spinner');
+      if (!loader) {
+        loader = document.createElement('div');
+        loader.className = 'loading-spinner';
+        loader.textContent = 'Loading progress data...';
+        loader.style.position = 'absolute';
+        loader.style.top = '50%';
+        loader.style.left = '50%';
+        loader.style.transform = 'translate(-50%, -50%)';
+        loader.style.background = 'rgba(255, 255, 255, 0.9)';
+        loader.style.padding = '1rem';
+        loader.style.border = '2px solid var(--c-black)';
+        loader.style.boxShadow = '4px 4px 0px var(--c-black)';
+        container.style.position = 'relative'; // Ensure container is relative
+        container.appendChild(loader);
+      }
+      loader.style.display = 'block';
+      this.elements.canvas.style.opacity = '0.3'; // Dim the canvas
     }
   }
 
   hideLoading() {
-    // Will be replaced by render()
+    if (this.elements.canvas) {
+      const container = this.elements.canvas.parentElement;
+      const loader = container.querySelector('.loading-spinner');
+      if (loader) {
+        loader.style.display = 'none';
+      }
+      this.elements.canvas.style.opacity = '1';
+    }
   }
 
   showError(message) {

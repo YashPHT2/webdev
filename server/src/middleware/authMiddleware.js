@@ -6,19 +6,25 @@ const protect = async (req, res, next) => {
   const token = req.cookies.token;
 
   if (!token) {
-    // No token found -> Redirect to login
+    // No token found
+    if (req.originalUrl.startsWith('/api')) {
+      return res.status(401).json({ message: 'Not authorized, no token' });
+    }
     return res.redirect('/login');
   }
 
   try {
     // 2. Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
+
     // 3. Find user in DB (and attach to request)
     req.user = await User.findById(decoded.id).select('-password');
-    
+
     if (!req.user) {
       res.clearCookie('token');
+      if (req.originalUrl.startsWith('/api')) {
+        return res.status(401).json({ message: 'Not authorized, please login' });
+      }
       return res.redirect('/login');
     }
 
@@ -26,6 +32,9 @@ const protect = async (req, res, next) => {
   } catch (error) {
     console.error('Auth Error:', error.message);
     res.clearCookie('token');
+    if (req.originalUrl.startsWith('/api')) {
+      return res.status(401).json({ message: 'Not authorized, token failed' });
+    }
     return res.redirect('/login');
   }
 };

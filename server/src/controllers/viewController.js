@@ -4,7 +4,8 @@ const dashboardViewData = {
     '/public/css/base.css',
     '/public/css/layout.css',
     '/public/css/components.css',
-    '/public/css/dashboard-enhanced.css'
+    '/public/css/dashboard-enhanced.css',
+    '/public/css/theme-neobrutalism.css'
   ],
   scripts: [
     { src: 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js', defer: true },

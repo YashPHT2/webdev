@@ -75,10 +75,11 @@ app.use(cookieParser()); // <--- ENABLE COOKIE PARSER
 
 // Basic rate limiting
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || `${15 * 60 * 1000}`, 10),
-  max: parseInt(process.env.RATE_LIMIT_MAX || '100', 10),
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || `${1 * 60 * 1000}`, 10), // 1 minute
+  max: parseInt(process.env.RATE_LIMIT_MAX || '5000', 10), // 5000 requests
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  message: 'Too many requests from this IP, please try again after a minute'
 });
 app.use(limiter);
 
@@ -126,8 +127,8 @@ app.use('/', authRoutes);
 
 // 2. Login Page (Public, but redirects if already logged in)
 app.get('/login', redirectIfLoggedIn, (req, res) => {
-    const { getLoginViewData } = require('./controllers/viewController');
-    res.render('pages/login', getLoginViewData());
+  const { getLoginViewData } = require('./controllers/viewController');
+  res.render('pages/login', getLoginViewData());
 });
 
 // 3. Protected Pages (Dashboard, etc.)

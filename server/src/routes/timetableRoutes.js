@@ -3,7 +3,8 @@ const router = express.Router();
 const timetableController = require('../controllers/timetableController');
 
 router.get('/', timetableController.getTimetable);
-router.put('/', timetableController.upsertTimetable);
-router.post('/', timetableController.upsertTimetable);
+router.post('/', timetableController.createBlock);
+router.put('/:id', timetableController.updateBlock);
+router.delete('/:id', timetableController.deleteBlock);
 
 module.exports = router;

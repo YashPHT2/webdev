@@ -7,7 +7,7 @@ class SmartMentorChatbot {
             taskData: {},
             conversationHistory: []
         };
-        
+
         this.tasks = [];
         this.priorityOrder = { high: 0, medium: 1, low: 2 };
         this.currentTaskId = null;
@@ -37,16 +37,16 @@ class SmartMentorChatbot {
         this.timetable = null;
         this.timetableFilters = { day: 'all', subject: '' };
         this.rowDensity = (localStorage.getItem('timetableDensity') || 'expanded');
-        if (!['compact','expanded'].includes(this.rowDensity)) this.rowDensity = 'expanded';
+        if (!['compact', 'expanded'].includes(this.rowDensity)) this.rowDensity = 'expanded';
         this.timetableLoading = false;
         this.prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        
+
         this.boundHandleViewportChange = this.handleViewportChange.bind(this);
         this.boundHandleDocumentClick = this.handleDocumentClick.bind(this);
-        
+
         this.init();
     }
-    
+
     init() {
         this.cacheElements();
         this.initChatClient();
@@ -72,7 +72,7 @@ class SmartMentorChatbot {
         this.setupCalendar();
         this.setupProgressToggleIndicator();
     }
-    
+
     cacheElements() {
         this.elements = {
             chatbotTrigger: document.getElementById('chatbot-trigger'),
@@ -171,7 +171,7 @@ class SmartMentorChatbot {
             addBlockGlobal: document.getElementById('add-block-global')
         };
     }
-    
+
     initChatClient() {
         if (!window.ChatbotClient) {
             this.chat = null;
@@ -206,7 +206,7 @@ class SmartMentorChatbot {
             }
         });
     }
-    
+
     attachEventListeners() {
         if (this.elements.chatbotTrigger) {
             this.elements.chatbotTrigger.addEventListener('click', () => this.openChatbot());
@@ -317,11 +317,11 @@ class SmartMentorChatbot {
                 }
             });
         }
-        
+
         if (this.elements.startChatEmpty) {
             this.elements.startChatEmpty.addEventListener('click', () => this.openChatbot());
         }
-        
+
         if (this.elements.quickActions) {
             this.elements.quickActions.forEach(button => {
                 button.addEventListener('click', () => {
@@ -330,7 +330,7 @@ class SmartMentorChatbot {
                 });
             });
         }
-        
+
         const modalCloseButtons = document.querySelectorAll('[data-close-modal], .modal-close');
         modalCloseButtons.forEach(button => {
             button.addEventListener('click', (event) => {
@@ -342,7 +342,7 @@ class SmartMentorChatbot {
                 }
             });
         });
-        
+
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 if (this.activeModal) {
@@ -429,7 +429,7 @@ class SmartMentorChatbot {
                     console.log('KPI drilldown clicked:', key);
                 });
             });
-        } catch (_) {}
+        } catch (_) { }
 
         // Enable swipe-to-complete on mobile (progressive enhancement)
         if (this.isMobile()) {
@@ -437,30 +437,30 @@ class SmartMentorChatbot {
             this.enableSwipeToComplete(this.elements.taskList);
         }
     }
-    
+
     openChatbot() {
         this.conversationState.isOpen = true;
         this._restoreFocusTo = document.activeElement;
         this.elements.chatbotModal.removeAttribute('hidden');
         this.elements.chatbotOverlay.removeAttribute('hidden');
-        
+
         setTimeout(() => {
             this.elements.chatbotModal.classList.add('active');
             this.elements.chatbotOverlay.classList.add('active');
             this.elements.chatbotInput.focus();
             this.setupChatFocusTrap();
         }, 10);
-        
+
         this.elements.chatNotification.classList.remove('active');
         this.scrollToBottom();
     }
-    
+
     closeChatbot() {
         this.conversationState.isOpen = false;
         this.teardownChatFocusTrap();
         this.elements.chatbotModal.classList.remove('active');
         this.elements.chatbotOverlay.classList.remove('active');
-        
+
         setTimeout(() => {
             this.elements.chatbotModal.setAttribute('hidden', '');
             this.elements.chatbotOverlay.setAttribute('hidden', '');
@@ -468,15 +468,15 @@ class SmartMentorChatbot {
             if (restoreTo && typeof restoreTo.focus === 'function') restoreTo.focus();
         }, 350);
     }
-    
+
     handleInputChange() {
         const value = this.elements.chatbotInput.value.trim();
         this.elements.sendButton.disabled = !value;
-        
+
         this.elements.chatbotInput.style.height = 'auto';
         this.elements.chatbotInput.style.height = Math.min(this.elements.chatbotInput.scrollHeight, 120) + 'px';
     }
-    
+
     handleKeydown(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -485,18 +485,18 @@ class SmartMentorChatbot {
             }
         }
     }
-    
+
     async handleSubmit(e) {
         e.preventDefault();
-        
+
         const message = this.elements.chatbotInput.value.trim();
         if (!message) return;
-        
+
         this.addMessage('user', message);
         this.elements.chatbotInput.value = '';
         this.elements.sendButton.disabled = true;
         this.elements.chatbotInput.style.height = 'auto';
-        
+
         if (this.chat) {
             try {
                 await this.chat.sendMessage(message);
@@ -519,13 +519,13 @@ class SmartMentorChatbot {
             }
         }
     }
-    
+
     async sendToAPI(message) {
         this.conversationState.conversationHistory.push({
             role: 'user',
             content: message
         });
-        
+
         try {
             const response = await fetch('/api/chat', {
                 method: 'POST',
@@ -537,31 +537,31 @@ class SmartMentorChatbot {
                     sessionId: this.chat?.state?.sessionId || undefined
                 })
             });
-            
+
             if (!response.ok) {
                 throw new Error('API request failed');
             }
-            
+
             const raw = await response.json();
             const payload = raw?.data || raw || {};
             const { reply, intent, resources } = payload;
-            
+
             setTimeout(() => {
                 this.hideTypingIndicator();
                 if (reply) this.addMessage('bot', reply);
                 if (resources) this.applyResources(resources);
                 if (intent && intent !== 'none') this.handleIntent(intent, payload.payload || {}, resources || {});
             }, 300 + Math.random() * 600);
-            
+
         } catch (error) {
             this.hideTypingIndicator();
             this.handleOfflineMode(message);
         }
     }
-    
+
     handleOfflineMode(message) {
         const lowerMessage = message.toLowerCase();
-        
+
         if (lowerMessage.includes('task') || lowerMessage.includes('create') || lowerMessage.includes('add')) {
             this.startTaskCreation();
         } else if (lowerMessage.includes('help') || lowerMessage.includes('what can you do')) {
@@ -579,13 +579,13 @@ class SmartMentorChatbot {
             this.offerOfflineOptions();
         }
     }
-    
+
     startTaskCreation() {
         this.conversationState.currentStep = 'task_creation_subject';
         this.conversationState.taskData = {};
         this.addMessage('bot', "Great! Let's create a new study task. What subject is this for?");
     }
-    
+
     offerOfflineOptions() {
         setTimeout(() => {
             this.addActionButtons([
@@ -594,7 +594,7 @@ class SmartMentorChatbot {
             ]);
         }, 300);
     }
-    
+
     processAPIResponse(data) {
         if (data.message) {
             this.addMessage('bot', data.message);
@@ -603,30 +603,30 @@ class SmartMentorChatbot {
                 content: data.message
             });
         }
-        
+
         if (data.currentStep) {
             this.conversationState.currentStep = data.currentStep;
         }
-        
+
         if (data.taskData) {
             this.conversationState.taskData = { ...this.conversationState.taskData, ...data.taskData };
         }
-        
+
         if (data.actions && data.actions.length > 0) {
             this.addActionButtons(data.actions);
         }
-        
+
         if (data.taskCreated) {
             this.handleTaskCreated(data.task);
         }
-        
+
         if (data.motivational) {
             setTimeout(() => {
                 this.updateMotivationalMessage(data.motivational);
             }, 1000);
         }
     }
-    
+
     handleQuickAction(action) {
         switch (action) {
             case 'create-task':
@@ -659,7 +659,7 @@ class SmartMentorChatbot {
                 break;
         }
     }
-    
+
     addMessage(sender, text, options = {}) {
         const message = {
             id: Date.now() + Math.random(),
@@ -668,57 +668,57 @@ class SmartMentorChatbot {
             timestamp: new Date(),
             ...options
         };
-        
+
         this.conversationState.messages.push(message);
         this.renderMessage(message);
         this.saveToStorage();
     }
-    
+
     renderMessage(message) {
         const messageEl = document.createElement('div');
         messageEl.className = `message ${message.sender}`;
         messageEl.setAttribute('role', 'article');
-        
+
         const avatar = document.createElement('div');
         avatar.className = 'message-avatar';
-        avatar.innerHTML = message.sender === 'bot' ? 
+        avatar.innerHTML = message.sender === 'bot' ?
             '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>' :
             '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
-        
+
         const content = document.createElement('div');
         content.className = 'message-content';
-        
+
         const bubble = document.createElement('div');
         bubble.className = 'message-bubble';
         bubble.textContent = message.text;
-        
+
         const time = document.createElement('div');
         time.className = 'message-time';
         time.textContent = this.formatTime(message.timestamp);
-        
+
         content.appendChild(bubble);
         content.appendChild(time);
         messageEl.appendChild(avatar);
         messageEl.appendChild(content);
-        
+
         this.elements.chatbotMessages.appendChild(messageEl);
         this.scrollToBottom();
     }
-    
+
     addActionButtons(actions) {
         const messageEl = document.createElement('div');
         messageEl.className = 'message bot';
-        
+
         const avatar = document.createElement('div');
         avatar.className = 'message-avatar';
         avatar.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>';
-        
+
         const content = document.createElement('div');
         content.className = 'message-content';
-        
+
         const actionsContainer = document.createElement('div');
         actionsContainer.className = 'action-buttons';
-        
+
         actions.forEach(actionData => {
             const button = document.createElement('button');
             button.className = 'action-button';
@@ -726,7 +726,7 @@ class SmartMentorChatbot {
             button.addEventListener('click', () => {
                 this.addMessage('user', actionData.text);
                 actionsContainer.remove();
-                
+
                 if (actionData.action) {
                     this.showTypingIndicator();
                     setTimeout(() => {
@@ -737,15 +737,15 @@ class SmartMentorChatbot {
             });
             actionsContainer.appendChild(button);
         });
-        
+
         content.appendChild(actionsContainer);
         messageEl.appendChild(avatar);
         messageEl.appendChild(content);
-        
+
         this.elements.chatbotMessages.appendChild(messageEl);
         this.scrollToBottom();
     }
-    
+
     handleActionClick(action, data) {
         switch (action) {
             case 'create-task':
@@ -764,14 +764,14 @@ class SmartMentorChatbot {
                 }
         }
     }
-    
+
     handleCustomAction(action, data) {
         console.log('Custom action:', action, data);
     }
-    
+
     showTypingIndicator() {
         if (document.querySelector('.typing-indicator')) return;
-        
+
         const typingEl = document.createElement('div');
         typingEl.className = 'typing-indicator';
         typingEl.innerHTML = `
@@ -786,11 +786,11 @@ class SmartMentorChatbot {
                 <div class="typing-dot"></div>
             </div>
         `;
-        
+
         this.elements.chatbotMessages.appendChild(typingEl);
         this.scrollToBottom();
     }
-    
+
     hideTypingIndicator() {
         const typingEl = document.querySelector('.typing-indicator');
         if (typingEl) {
@@ -833,7 +833,7 @@ class SmartMentorChatbot {
         this.streamingMessage.text = text;
         this.streamingMessage.bubbleEl.textContent = text;
         if (this.elements.chatAnnouncer) {
-            try { this.elements.chatAnnouncer.textContent = text.slice(-120); } catch (_) {}
+            try { this.elements.chatAnnouncer.textContent = text.slice(-120); } catch (_) { }
         }
         this.scrollToBottom();
     }
@@ -894,7 +894,7 @@ class SmartMentorChatbot {
             if (this.chat && this.chat.reset) {
                 await this.chat.reset();
             }
-        } catch (_) {}
+        } catch (_) { }
         // Clear UI
         this.conversationState.messages = [];
         if (this.elements.chatbotMessages) {
@@ -906,20 +906,20 @@ class SmartMentorChatbot {
             this.elements.chatAnnouncer.textContent = 'Conversation reset';
         }
     }
-    
+
     handleTaskCreated(task) {
         this.hideTypingIndicator();
-        
+
         const confirmationEl = document.createElement('div');
         confirmationEl.className = 'message bot';
-        
+
         const avatar = document.createElement('div');
         avatar.className = 'message-avatar';
         avatar.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>';
-        
+
         const content = document.createElement('div');
         content.className = 'message-content';
-        
+
         const confirmation = document.createElement('div');
         confirmation.className = 'confirmation-message';
         confirmation.innerHTML = `
@@ -929,35 +929,35 @@ class SmartMentorChatbot {
             </svg>
             <span>Task created successfully!</span>
         `;
-        
+
         content.appendChild(confirmation);
         confirmationEl.appendChild(avatar);
         confirmationEl.appendChild(content);
-        
+
         this.elements.chatbotMessages.appendChild(confirmationEl);
-        
+
         this.tasks.push(task);
         this.saveToStorage();
         this.renderTasks();
         this.updateMotivationalMessage("Great job! You're building good study habits! 🎉");
-        
+
         this.conversationState.currentStep = null;
         this.conversationState.taskData = {};
-        
+
         setTimeout(() => {
             this.addMessage('bot', "Is there anything else I can help you with?");
         }, 1000);
-        
+
         this.scrollToBottom();
     }
-    
+
     displayWelcomeMessage() {
         if (this.conversationState.messages.length === 0) {
             const welcomeMessages = [
                 "Hi! I'm your Smart Academic Mentor. I'm here to help you stay organized and motivated with your studies! 👋",
                 "You can ask me to create study tasks, plan your schedule, or just chat about your academic goals. How can I help you today?"
             ];
-            
+
             welcomeMessages.forEach((msg, index) => {
                 setTimeout(() => {
                     this.addMessage('bot', msg);
@@ -968,12 +968,12 @@ class SmartMentorChatbot {
 
     renderTasks() {
         this.renderPriorityTasks(); // This now renders into the "Assignment Tracker"
-        
+
         const listEl = this.elements.taskList;
         if (!listEl) return;
 
         const errorBanner = this.lastTaskFetchError ? `<div class="inline-error" role="alert">Unable to refresh tasks. You're viewing cached data. <button class="link-button" id="retry-fetch-tasks">Retry</button></div>` : '';
-        
+
         if (this.tasks.length === 0) {
             listEl.innerHTML = errorBanner + `
                 <div class="empty-state">
@@ -1000,7 +1000,7 @@ class SmartMentorChatbot {
         if (filterSubject) {
             tasks = tasks.filter(t => (t.subject || '').toLowerCase() === filterSubject);
         }
-        
+
         tasks.forEach((task) => {
             const taskEl = this.createTaskElement(task); // Use a helper function for clarity
             taskEl.addEventListener('click', (e) => {
@@ -1016,17 +1016,54 @@ class SmartMentorChatbot {
             });
             listEl.appendChild(taskEl);
         });
+
+        this.updateDashboardKPIs();
     }
-    
+
+    updateDashboardKPIs() {
+        // Update Dashboard KPIs if elements exist
+        const kpiCompleted = document.getElementById('kpi-completed');
+        const kpiInProgress = document.getElementById('kpi-inprogress');
+        const kpiAvgScore = document.getElementById('kpi-avgscore');
+        const kpiTimeSpent = document.getElementById('kpi-timespent');
+
+        if (kpiCompleted || kpiInProgress || kpiAvgScore || kpiTimeSpent) {
+            const completedTasks = this.tasks.filter(t => t.completed);
+            const inProgressTasks = this.tasks.filter(t => !t.completed);
+
+            if (kpiCompleted) kpiCompleted.textContent = completedTasks.length;
+            if (kpiInProgress) kpiInProgress.textContent = inProgressTasks.length;
+
+            // Calculate time spent (sum of estimatedDuration for completed tasks)
+            // Assuming estimatedDuration is in minutes
+            if (kpiTimeSpent) {
+                const totalMinutes = completedTasks.reduce((acc, t) => acc + (t.estimatedDuration || 0), 0);
+                const hours = (totalMinutes / 60).toFixed(1);
+                kpiTimeSpent.textContent = `${hours}h`;
+
+                // Update donut if exists
+                const donut = document.querySelector('.kpi-donut');
+                if (donut) {
+                    // Arbitrary goal of 10 hours for visualization
+                    const progress = Math.min((totalMinutes / 600) * 100, 100);
+                    donut.style.setProperty('--kpi-progress', `${progress}%`);
+                }
+            }
+
+            // Avg Score - Placeholder or calculate from assessments if available
+            // For now, we'll leave it static or random if we want to simulate
+        }
+    }
+
     toggleTask(taskId, isCompleted) {
         const taskIndex = this.tasks.findIndex(t => t.id === taskId);
         if (taskIndex === -1) return;
-        
+
         this.tasks[taskIndex].completed = isCompleted;
         this.tasks[taskIndex].updatedAt = new Date().toISOString();
         this.saveToStorage();
         this.renderTasks(); // Re-render both lists to maintain consistency
-        
+
         if (isCompleted) {
             const completedMessages = [
                 "Awesome! Task completed! 🎉",
@@ -1036,7 +1073,7 @@ class SmartMentorChatbot {
             this.updateMotivationalMessage(completedMessages[Math.floor(Math.random() * completedMessages.length)]);
         }
     }
-    
+
     getSortedTasks() {
         return [...this.tasks].sort((a, b) => {
             if (a.completed !== b.completed) {
@@ -1053,7 +1090,7 @@ class SmartMentorChatbot {
             return new Date(b.updatedAt) - new Date(a.updatedAt);
         });
     }
-    
+
     createPriorityBadge(task) {
         const level = (task.priority || 'medium').toLowerCase();
         const badge = document.createElement('span');
@@ -1062,24 +1099,24 @@ class SmartMentorChatbot {
         badge.textContent = level;
         return badge;
     }
-    
+
     async refreshTasks() {
         const button = this.elements.refreshTasks;
         const svg = button?.querySelector('svg');
-        
+
         if (svg) {
             svg.style.animation = 'spin 0.5s ease-in-out';
         }
-        
+
         await this.fetchTasks();
-        
+
         if (svg) {
             setTimeout(() => {
                 svg.style.animation = '';
             }, 500);
         }
     }
-    
+
     updateMotivationalMessage(message = null) {
         if (!this.elements.motivationalMessage) return;
         if (message) {
@@ -1088,23 +1125,23 @@ class SmartMentorChatbot {
             const randomMessage = this.motivationalMessages[Math.floor(Math.random() * this.motivationalMessages.length)];
             this.elements.motivationalMessage.textContent = randomMessage;
         }
-        
+
         this.elements.motivationalMessage.style.animation = 'fadeIn 0.5s ease-in';
         this.elements.motivationalMessage.addEventListener('animationend', () => {
             this.elements.motivationalMessage.style.animation = '';
         }, { once: true });
     }
-    
+
     toggleTheme() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
+
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
     }
 
     getTodayKey() {
-        const map = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+        const map = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
         const d = new Date().getDay();
         return map[d] || 'monday';
     }
@@ -1112,7 +1149,7 @@ class SmartMentorChatbot {
     setDensity(density) {
         const val = (density === 'compact') ? 'compact' : 'expanded';
         this.rowDensity = val;
-        try { localStorage.setItem('timetableDensity', val); } catch(_) {}
+        try { localStorage.setItem('timetableDensity', val); } catch (_) { }
         if (this.elements.timetableGrid) this.elements.timetableGrid.setAttribute('data-density', val);
         this.updateDensityToggleUI();
         this.renderTimetable();
@@ -1127,7 +1164,7 @@ class SmartMentorChatbot {
                 btn.classList.toggle('progress-view-toggle__button--active', isActive);
                 btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
             });
-        } catch (_) {}
+        } catch (_) { }
     }
 
     toggleSidebarVisibility() {
@@ -1185,8 +1222,8 @@ class SmartMentorChatbot {
         const modal = this.elements.chatbotModal;
         if (!modal) return;
         const selectors = [
-            'a[href]','area[href]','input:not([disabled])','select:not([disabled])','textarea:not([disabled])',
-            'button:not([disabled])','iframe','[tabindex]:not([tabindex="-1"])','[contentEditable=true]'
+            'a[href]', 'area[href]', 'input:not([disabled])', 'select:not([disabled])', 'textarea:not([disabled])',
+            'button:not([disabled])', 'iframe', '[tabindex]:not([tabindex="-1"])', '[contentEditable=true]'
         ];
         const getFocusable = () => Array.from(modal.querySelectorAll(selectors.join(','))).filter(el => el.offsetParent !== null || el === document.activeElement);
         this._chatTrapHandler = (e) => {
@@ -1231,8 +1268,8 @@ class SmartMentorChatbot {
         this.teardownModalFocusTrap();
         if (!modal) return;
         const selectors = [
-            'a[href]','area[href]','input:not([disabled])','select:not([disabled])','textarea:not([disabled])',
-            'button:not([disabled])','iframe','[tabindex]:not([tabindex="-1"])','[contentEditable=true]'
+            'a[href]', 'area[href]', 'input:not([disabled])', 'select:not([disabled])', 'textarea:not([disabled])',
+            'button:not([disabled])', 'iframe', '[tabindex]:not([tabindex="-1"])', '[contentEditable=true]'
         ];
         const getFocusable = () => Array.from(modal.querySelectorAll(selectors.join(','))).filter(el => el.offsetParent !== null || el === document.activeElement);
         this._modalTrapHandler = (e) => {
@@ -1306,33 +1343,33 @@ class SmartMentorChatbot {
         container.addEventListener('touchend', end);
         container.addEventListener('touchcancel', end);
     }
-    
+
     scrollToBottom() {
         setTimeout(() => {
-            if(this.elements.chatbotMessages) {
+            if (this.elements.chatbotMessages) {
                 this.elements.chatbotMessages.scrollTop = this.elements.chatbotMessages.scrollHeight;
             }
         }, 100);
     }
-    
+
     formatTime(date) {
         const now = new Date();
         const messageDate = new Date(date);
         const diffInMs = now - messageDate;
         const diffInMins = Math.floor(diffInMs / 60000);
-        
+
         if (diffInMins < 1) return 'Just now';
         if (diffInMins < 60) return `${diffInMins}m ago`;
-        
+
         const hours = messageDate.getHours();
         const minutes = messageDate.getMinutes();
         const ampm = hours >= 12 ? 'PM' : 'AM';
         const displayHours = hours % 12 || 12;
         const displayMinutes = minutes < 10 ? '0' + minutes : minutes;
-        
+
         return `${displayHours}:${displayMinutes} ${ampm}`;
     }
-    
+
     saveToStorage() {
         try {
             const msgs = Array.isArray(this.conversationState.messages) ? this.conversationState.messages.slice(-20) : [];
@@ -1342,22 +1379,22 @@ class SmartMentorChatbot {
             console.error('Error saving to storage:', error);
         }
     }
-    
+
     loadFromStorage() {
         try {
             const savedMessages = localStorage.getItem('smartMentorMessages');
             const savedTasks = localStorage.getItem('smartMentorTasks');
             const savedTheme = localStorage.getItem('theme');
-            
+
             if (savedMessages) {
                 this.conversationState.messages = JSON.parse(savedMessages);
                 this.conversationState.messages.forEach(msg => this.renderMessage(msg));
             }
-            
+
             if (savedTasks) {
                 this.tasks = JSON.parse(savedTasks);
             }
-            
+
             if (savedTheme) {
                 document.documentElement.setAttribute('data-theme', savedTheme);
             }
@@ -1365,18 +1402,18 @@ class SmartMentorChatbot {
             console.error('Error loading from storage:', error);
         }
     }
-    
+
     async fetchTasks() {
         if (this.isFetchingTasks) return;
         this.isFetchingTasks = true;
-        
+
         try {
             let tasks = null;
             if (window.api && window.api.getTasks) {
                 const payload = await window.api.getTasks();
                 tasks = Array.isArray(payload) ? payload : (payload?.data || payload?.tasks || []);
             } else {
-                 // Simulate fetching for demo purposes if API module is not present
+                // Simulate fetching for demo purposes if API module is not present
                 tasks = JSON.parse(localStorage.getItem('smartMentorTasks')) || [];
             }
             if (Array.isArray(tasks)) {
@@ -1392,7 +1429,7 @@ class SmartMentorChatbot {
             this.renderTasks();
         }
     }
-    
+
     normalizeTask(task) {
         if (!task) return null;
         const normalized = {
@@ -1409,14 +1446,14 @@ class SmartMentorChatbot {
         normalized.priority = this.getPriorityLevelFromTask(task);
         return normalized;
     }
-    
+
     generateTaskId() {
         return Date.now().toString(36) + Math.random().toString(36).substring(2, 10);
     }
-    
+
     openTaskForm(taskId = null) {
         this.currentTaskId = taskId;
-        
+
         if (taskId) {
             const task = this.tasks.find(t => t.id === taskId);
             if (task) {
@@ -1440,19 +1477,19 @@ class SmartMentorChatbot {
             this.updateTaskFormProgressValue();
             this.elements.taskFormSubmit.textContent = 'Save Task';
         }
-        
+
         this.openModal('task-form-modal');
     }
-    
+
     updateTaskFormProgressValue() {
         if (this.elements.taskFormProgress && this.elements.taskFormProgressValue) {
             this.elements.taskFormProgressValue.textContent = this.elements.taskFormProgress.value + '%';
         }
     }
-    
+
     async handleTaskFormSubmit(e) {
         e.preventDefault();
-        
+
         const taskId = this.elements.taskFormId.value;
         const taskData = {
             title: this.elements.taskFormTitleInput.value.trim(),
@@ -1464,52 +1501,52 @@ class SmartMentorChatbot {
             completed: false,
             updatedAt: new Date().toISOString()
         };
-        
+
         if (taskId) {
             await this.updateTask(taskId, taskData);
         } else {
             await this.createTask(taskData);
         }
-        
+
         this.closeModal('task-form-modal');
         this.renderTasks();
     }
-    
+
     async createTask(taskData) {
         const task = this.normalizeTask({
             ...taskData,
             createdAt: new Date().toISOString()
         });
-        
+
         this.tasks.push(task);
         this.saveToStorage();
         this.updateMotivationalMessage("Great! Task created successfully! 🎉");
         this.initAnalyticsAndCharts();
         this.buildEventsFromData();
     }
-    
+
     async updateTask(taskId, taskData) {
         const taskIndex = this.tasks.findIndex(t => t.id === taskId);
         if (taskIndex === -1) return;
-        
+
         const updatedTask = this.normalizeTask({
             ...this.tasks[taskIndex],
             ...taskData
         });
-        
+
         this.tasks[taskIndex] = updatedTask;
         this.saveToStorage();
         this.updateMotivationalMessage("Task updated successfully! ✅");
         this.initAnalyticsAndCharts();
         this.buildEventsFromData();
     }
-    
+
     openTaskDetail(taskId) {
         const task = this.tasks.find(t => t.id === taskId);
         if (!task) return;
-        
+
         this.currentTaskId = taskId;
-        
+
         if (this.elements.taskDetailTitle) this.elements.taskDetailTitle.textContent = 'Task Details';
         if (this.elements.taskDetailSubtitle) this.elements.taskDetailSubtitle.textContent = task.subject || 'General';
         if (this.elements.taskDetailName) this.elements.taskDetailName.textContent = task.title;
@@ -1521,26 +1558,26 @@ class SmartMentorChatbot {
             this.elements.taskDetailPriorityBadge.textContent = task.priority;
             this.elements.taskDetailPriorityBadge.className = 'priority-badge ' + task.priority;
         }
-        
+
         const progress = task.progress || 0;
         if (this.elements.taskDetailProgressBar) this.elements.taskDetailProgressBar.style.width = progress + '%';
         if (this.elements.taskDetailProgressValue) this.elements.taskDetailProgressValue.textContent = progress + '%';
-        
+
         this.openModal('task-detail-modal');
     }
-    
+
     openDeleteConfirm(taskId) {
         this.currentTaskId = taskId;
         this.closeModal('task-detail-modal');
         this.openModal('delete-confirm-modal');
     }
-    
+
     async confirmDeleteTask() {
         if (!this.currentTaskId) return;
-        
+
         const taskIndex = this.tasks.findIndex(t => t.id === this.currentTaskId);
         if (taskIndex === -1) return;
-        
+
         this.tasks.splice(taskIndex, 1);
         this.saveToStorage();
         this.renderTasks();
@@ -1550,45 +1587,45 @@ class SmartMentorChatbot {
         this.initAnalyticsAndCharts();
         this.buildEventsFromData();
     }
-    
+
     openPriorityOverride(taskId) {
         const task = this.tasks.find(t => t.id === taskId);
         if (!task) return;
-        
+
         this.currentTaskId = taskId;
         this.elements.priorityOverrideTaskId.value = taskId;
         this.elements.priorityOverrideSelect.value = task.priority;
         this.elements.priorityOverrideReason.value = '';
-        
+
         this.closeModal('task-detail-modal');
         this.openModal('priority-override-modal');
     }
-    
+
     async handlePriorityOverrideSubmit(e) {
         e.preventDefault();
-        
+
         const taskId = this.elements.priorityOverrideTaskId.value;
         const newPriority = this.elements.priorityOverrideSelect.value.toLowerCase();
-        
+
         const taskIndex = this.tasks.findIndex(t => t.id === taskId);
         if (taskIndex === -1) return;
-        
+
         this.tasks[taskIndex].priority = newPriority;
         this.tasks[taskIndex].updatedAt = new Date().toISOString();
-        
+
         this.saveToStorage();
         this.renderTasks();
         this.closeModal('priority-override-modal');
         this.updateMotivationalMessage("Priority updated! 🎯");
     }
-    
+
     openModal(modalId) {
         const modal = document.getElementById(modalId);
         if (!modal) return;
-        
+
         this.activeModal = modalId;
         this._restoreFocusEl = document.activeElement;
-        
+
         if (this.elements.taskModalOverlay) {
             this.elements.taskModalOverlay.removeAttribute('hidden');
             requestAnimationFrame(() => this.elements.taskModalOverlay.classList.add('active'));
@@ -1601,19 +1638,19 @@ class SmartMentorChatbot {
             if (firstFocusable) firstFocusable.focus();
         });
     }
-    
+
     closeModal(modalId = null) {
         const targetModalId = modalId || this.activeModal;
         if (!targetModalId) return;
-        
+
         const modal = document.getElementById(targetModalId);
         if (!modal) return;
-        
+
         if (this.elements.taskModalOverlay) {
             this.elements.taskModalOverlay.classList.remove('active');
         }
         modal.classList.remove('active');
-        
+
         setTimeout(() => {
             if (this.elements.taskModalOverlay && !document.querySelector('.modal.active')) {
                 this.elements.taskModalOverlay.setAttribute('hidden', '');
@@ -1627,7 +1664,7 @@ class SmartMentorChatbot {
             this._restoreFocusEl = null;
         }, 250);
     }
-    
+
     renderPriorityTasks() {
         const container = this.elements.priorityTaskList;
         if (!container) return;
@@ -1641,14 +1678,14 @@ class SmartMentorChatbot {
                 return new Date(a.dueDate || 0) - new Date(b.dueDate || 0);
             })
             .slice(0, 3);
-        
+
         container.innerHTML = '';
-        
+
         if (priorityTasks.length === 0) {
             container.innerHTML = `<div class="empty-state" style="padding: 1rem 0;"><p>No active assignments. Great job!</p></div>`;
             return;
         }
-        
+
         priorityTasks.forEach(task => {
             const taskEl = this.createTaskElement(task);
             container.appendChild(taskEl);
@@ -1683,10 +1720,10 @@ class SmartMentorChatbot {
             e.stopPropagation();
             this.toggleTask(task.id, e.target.checked);
         });
-        
+
         return el;
     }
-    
+
     formatDate(dateString) {
         if (!dateString) return '—';
         const date = new Date(dateString);
@@ -1695,31 +1732,31 @@ class SmartMentorChatbot {
         const options = { month: 'short', day: 'numeric' };
         return date.toLocaleDateString('en-US', options);
     }
-    
+
     formatDateTime(dateString) {
         if (!dateString) return '—';
         const date = new Date(dateString);
-        const options = { 
+        const options = {
             year: 'numeric', month: 'short', day: 'numeric',
             hour: '2-digit', minute: '2-digit'
         };
         return date.toLocaleDateString('en-US', options);
     }
-    
+
     getPriorityLevelFromTask(task) {
         const priority = (task.priority || 'medium').toLowerCase();
         if (['high', 'medium', 'low'].includes(priority)) return priority;
         return 'medium';
     }
-    
+
     clamp(value, min, max) {
         return Math.max(min, Math.min(max, value));
     }
-    
+
     getPriorityWeight(task) {
         return this.priorityOrder[task.priority] ?? 1;
     }
-    
+
     compareDueDates(a, b) {
         const dateA = a.dueDate ? new Date(a.dueDate) : null;
         const dateB = b.dueDate ? new Date(b.dueDate) : null;
@@ -1748,7 +1785,7 @@ class SmartMentorChatbot {
         const inProgress = this.tasks.length - completed;
         const totalScore = this.tasks.reduce((acc, t) => acc + (t.progress || 0), 0);
         const avgScore = this.tasks.length > 0 ? Math.round(totalScore / this.tasks.length) : 0;
-        
+
         document.getElementById('kpi-completed').textContent = completed;
         document.getElementById('kpi-inprogress').textContent = inProgress;
         document.getElementById('kpi-avgscore').textContent = `${avgScore}%`;
@@ -1767,7 +1804,7 @@ class SmartMentorChatbot {
         if (!canvas) return;
 
         const ctx = canvas.getContext('2d');
-        
+
         // Destroy existing chart if any
         if (this.charts && this.charts.progress) {
             this.charts.progress.destroy();
@@ -1775,7 +1812,7 @@ class SmartMentorChatbot {
 
         // Get real data from tasks
         const weekData = this.getWeeklyProgressData();
-        
+
         // Create beautiful gradients
         const gradientFill = ctx.createLinearGradient(0, 0, 0, 350);
         gradientFill.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
@@ -1885,26 +1922,26 @@ class SmartMentorChatbot {
             },
             plugins: [{
                 // Custom plugin for adding glow effect to points
-                beforeDatasetsDraw: function(chart) {
+                beforeDatasetsDraw: function (chart) {
                     const ctx = chart.ctx;
-                    chart.data.datasets.forEach(function(dataset, datasetIndex) {
+                    chart.data.datasets.forEach(function (dataset, datasetIndex) {
                         const meta = chart.getDatasetMeta(datasetIndex);
                         if (!meta.hidden) {
-                            meta.data.forEach(function(element, index) {
+                            meta.data.forEach(function (element, index) {
                                 ctx.save();
-                                
+
                                 // Draw glow
                                 ctx.shadowColor = 'rgba(59, 130, 246, 0.6)';
                                 ctx.shadowBlur = 15;
                                 ctx.shadowOffsetX = 0;
                                 ctx.shadowOffsetY = 0;
-                                
+
                                 // Draw point glow
                                 ctx.fillStyle = 'rgba(59, 130, 246, 0.3)';
                                 ctx.beginPath();
                                 ctx.arc(element.x, element.y, 12, 0, 2 * Math.PI);
                                 ctx.fill();
-                                
+
                                 ctx.restore();
                             });
                         }
@@ -1921,26 +1958,26 @@ class SmartMentorChatbot {
         const now = new Date();
         const weekStart = new Date(now);
         weekStart.setDate(now.getDate() - now.getDay()); // Start of week (Sunday)
-        
+
         const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         const labels = [];
         const completed = [];
-        
+
         for (let i = 0; i < 7; i++) {
             const date = new Date(weekStart);
             date.setDate(weekStart.getDate() + i);
             labels.push(days[i]);
-            
+
             // Count completed tasks for this day
             const dayTasks = this.tasks.filter(task => {
                 if (!task.dueDate) return false;
                 const taskDate = new Date(task.dueDate);
                 return taskDate.toDateString() === date.toDateString() && task.completed;
             });
-            
+
             completed.push(dayTasks.length);
         }
-        
+
         return { labels, completed };
     }
 
@@ -1949,7 +1986,7 @@ class SmartMentorChatbot {
         const totalTasks = this.tasks.length;
         const inProgress = this.tasks.filter(t => !t.completed && t.progress > 0).length;
         const avgScore = this.calculateAverageScore();
-        
+
         // Update summary values
         const summaryItems = document.querySelectorAll('.progress-summary__item');
         if (summaryItems[0]) {
@@ -1966,13 +2003,13 @@ class SmartMentorChatbot {
     calculateAverageScore() {
         const completedTasks = this.tasks.filter(t => t.completed);
         if (completedTasks.length === 0) return 0;
-        
+
         const totalScore = completedTasks.reduce((sum, task) => {
             // Assume score based on priority and completion
             const priorityScore = { high: 95, medium: 85, low: 75 };
             return sum + (priorityScore[task.priority] || 80);
         }, 0);
-        
+
         return Math.round(totalScore / completedTasks.length);
     }
 
@@ -2018,7 +2055,7 @@ class SmartMentorChatbot {
             }
             this.updateProgressToggleIndicator();
             window.addEventListener('resize', () => this.updateProgressToggleIndicator());
-        } catch (_) {}
+        } catch (_) { }
     }
 
     updateProgressToggleIndicator() {
@@ -2032,7 +2069,7 @@ class SmartMentorChatbot {
             const x = arect.left - crect.left + container.scrollLeft;
             indicator.style.width = `${arect.width}px`;
             indicator.style.transform = `translateX(${Math.round(x)}px)`;
-        } catch (_) {}
+        } catch (_) { }
     }
 
     createRipple(e, el) {
@@ -2049,7 +2086,7 @@ class SmartMentorChatbot {
             ripple.style.top = `${top}px`;
             el.appendChild(ripple);
             ripple.addEventListener('animationend', () => ripple.remove());
-        } catch (_) {}
+        } catch (_) { }
     }
 
     handleProgressViewToggle(button) {
@@ -2071,7 +2108,7 @@ class SmartMentorChatbot {
         if (!canvas || !this.analytics || !window.Chart) return;
         // entrance motion via rAF
         this.animateEntrance(canvas, { duration: 320, fromY: 6, fromScale: 0.98 });
-        
+
         const dataMap = {
             weekly: { data: this.analytics.trend.weekly, labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
             monthly: { data: this.analytics.trend.monthly, labels: Array.from({ length: 30 }, (_, i) => i + 1) },
@@ -2112,7 +2149,7 @@ class SmartMentorChatbot {
     setDensity(density) {
         const val = (density === 'compact') ? 'compact' : 'expanded';
         this.rowDensity = val;
-        try { localStorage.setItem('timetableDensity', val); } catch (_) {}
+        try { localStorage.setItem('timetableDensity', val); } catch (_) { }
         this.updateDensityToggleUI();
         this.renderTimetable();
     }
@@ -2148,8 +2185,8 @@ class SmartMentorChatbot {
         const grid = this.elements.timetableGrid;
         if (!grid) return;
         grid.classList.add('timetable-grid--rows');
-        const daysOrder = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
-        const dayLabels = { monday:'Monday', tuesday:'Tuesday', wednesday:'Wednesday', thursday:'Thursday', friday:'Friday', saturday:'Saturday', sunday:'Sunday' };
+        const daysOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        const dayLabels = { monday: 'Monday', tuesday: 'Tuesday', wednesday: 'Wednesday', thursday: 'Thursday', friday: 'Friday', saturday: 'Saturday', sunday: 'Sunday' };
         grid.innerHTML = '';
         if (this.elements.timetableGrid) {
             this.elements.timetableGrid.setAttribute('data-density', this.rowDensity);
@@ -2164,7 +2201,7 @@ class SmartMentorChatbot {
                 const row = document.createElement('section');
                 row.className = 'day-row';
                 row.dataset.day = day;
-                row.setAttribute('role','region');
+                row.setAttribute('role', 'region');
                 row.setAttribute('aria-labelledby', `day-${day}-label`);
                 row.innerHTML = `
                     <div class="day-row__header">
@@ -2186,7 +2223,7 @@ class SmartMentorChatbot {
             const row = document.createElement('section');
             row.className = 'day-row';
             row.dataset.day = day;
-            row.setAttribute('role','region');
+            row.setAttribute('role', 'region');
             row.setAttribute('aria-labelledby', `day-${day}-label`);
             row.innerHTML = `
                 <div class="day-row__header">
@@ -2207,7 +2244,7 @@ class SmartMentorChatbot {
                 blocks = blocks.filter(b => (b.subject || '').toLowerCase().includes(subjectQuery));
             }
 
-            blocks.sort((a,b) => this.timeToMinutes(a.start) - this.timeToMinutes(b.start));
+            blocks.sort((a, b) => this.timeToMinutes(a.start) - this.timeToMinutes(b.start));
             if (!blocks.length) {
                 const empty = document.createElement('div');
                 empty.className = 'empty-state empty-state--small';
@@ -2240,7 +2277,7 @@ class SmartMentorChatbot {
 
     openTimetableEditor() {
         const today = new Date().getDay(); // 0 Sun ... 6 Sat
-        const map = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+        const map = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
         const day = map[today] || 'monday';
         this.openBlockForm(day);
     }
@@ -2256,7 +2293,7 @@ class SmartMentorChatbot {
         const obj = base && typeof base === 'object' ? base : {};
         const days = obj.days && typeof obj.days === 'object' ? obj.days : {};
         const normDays = {};
-        const keys = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+        const keys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
         keys.forEach(k => {
             const arr = Array.isArray(days[k]) ? days[k] : [];
             normDays[k] = arr.map(b => this.ensureBlock(b));
@@ -2290,7 +2327,7 @@ class SmartMentorChatbot {
         if (!m) return '09:00';
         let hh = Math.max(0, Math.min(23, parseInt(m[1], 10)));
         let mm = Math.max(0, Math.min(59, parseInt(m[2], 10)));
-        return `${hh.toString().padStart(2,'0')}:${mm.toString().padStart(2,'0')}`;
+        return `${hh.toString().padStart(2, '0')}:${mm.toString().padStart(2, '0')}`;
     }
 
     timeToMinutes(t) {
@@ -2300,9 +2337,9 @@ class SmartMentorChatbot {
     }
 
     minutesToTime(mins) {
-        let m = Math.max(0, mins|0);
+        let m = Math.max(0, mins | 0);
         let h = Math.floor(m / 60) % 24; let mm = m % 60;
-        return `${h.toString().padStart(2,'0')}:${mm.toString().padStart(2,'0')}`;
+        return `${h.toString().padStart(2, '0')}:${mm.toString().padStart(2, '0')}`;
     }
 
     formatHHMM(t) {
@@ -2310,7 +2347,7 @@ class SmartMentorChatbot {
         const [h, m] = t.split(':').map(Number);
         const ampm = h >= 12 ? 'PM' : 'AM';
         const hh = (h % 12) || 12;
-        return `${hh}:${m.toString().padStart(2,'0')} ${ampm}`;
+        return `${hh}:${m.toString().padStart(2, '0')} ${ampm}`;
     }
 
     computeTimelineMetrics() {
@@ -2329,7 +2366,7 @@ class SmartMentorChatbot {
 
     getTodayKey() {
         const idx = new Date().getDay();
-        const map = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+        const map = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
         return map[idx] || 'monday';
     }
 
@@ -2464,12 +2501,12 @@ class SmartMentorChatbot {
         let newStart = op.originStart;
         let newEnd = op.originEnd;
         if (op.type === 'move') {
-            newStart = Math.max(0, Math.min(24*60 - this.minBlockMinutes, op.originStart + deltaMins));
+            newStart = Math.max(0, Math.min(24 * 60 - this.minBlockMinutes, op.originStart + deltaMins));
             newEnd = Math.max(newStart + this.minBlockMinutes, op.originEnd + deltaMins);
         } else if (op.type === 'resize-start') {
             newStart = Math.max(0, Math.min(op.originEnd - this.minBlockMinutes, op.originStart + deltaMins));
         } else if (op.type === 'resize-end') {
-            newEnd = Math.max(op.originStart + this.minBlockMinutes, Math.min(24*60, op.originEnd + deltaMins));
+            newEnd = Math.max(op.originStart + this.minBlockMinutes, Math.min(24 * 60, op.originEnd + deltaMins));
         }
         // Update visual
         const left = Math.round(newStart * (op.pxPerMinute || 1));
@@ -2519,7 +2556,7 @@ class SmartMentorChatbot {
             if (i === -1) return;
             const s = this.timeToMinutes(arr[i].start);
             const e = this.timeToMinutes(arr[i].end);
-            let ns = Math.max(0, Math.min(24*60 - this.minBlockMinutes, s + deltaMins));
+            let ns = Math.max(0, Math.min(24 * 60 - this.minBlockMinutes, s + deltaMins));
             let ne = Math.max(ns + this.minBlockMinutes, e + deltaMins);
             arr[i].start = this.minutesToTime(ns);
             arr[i].end = this.minutesToTime(ne);
@@ -2534,7 +2571,7 @@ class SmartMentorChatbot {
             if (i === -1) return;
             const s = this.timeToMinutes(arr[i].start);
             const e = this.timeToMinutes(arr[i].end);
-            let ne = Math.max(s + this.minBlockMinutes, Math.min(24*60, e + deltaEndMins));
+            let ne = Math.max(s + this.minBlockMinutes, Math.min(24 * 60, e + deltaEndMins));
             arr[i].end = this.minutesToTime(ne);
         };
         this.saveTimetableOptimistic(apply, 'Updated');
@@ -2543,9 +2580,9 @@ class SmartMentorChatbot {
     createTimeBlockEl(block, day, index) {
         const el = document.createElement('div');
         el.className = 'time-block';
-        el.setAttribute('role','listitem');
-        el.setAttribute('tabindex','0');
-        el.setAttribute('draggable','true');
+        el.setAttribute('role', 'listitem');
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('draggable', 'true');
         el.dataset.blockId = block.id;
         el.dataset.day = day;
 
@@ -2634,7 +2671,7 @@ class SmartMentorChatbot {
 
     startInlineEditTitle(titleEl, day, blockId) {
         if (!titleEl || titleEl.isContentEditable) return;
-        titleEl.setAttribute('contenteditable','true');
+        titleEl.setAttribute('contenteditable', 'true');
         titleEl.focus();
         const done = () => {
             titleEl.removeAttribute('contenteditable');
@@ -2735,7 +2772,7 @@ class SmartMentorChatbot {
     }
 
     moveBlockToAdjacentDay(day, blockId, dir) {
-        const order = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+        const order = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
         const idx = order.indexOf(day);
         const toIdx = Math.max(0, Math.min(order.length - 1, idx + dir));
         const toDay = order[toIdx];
@@ -2800,7 +2837,7 @@ class SmartMentorChatbot {
     clearDragState() { this.dragState = null; }
 
     escapeHtml(s) {
-        return (s || '').replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;' }[c]));
+        return (s || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\'': '&#39;' }[c]));
     }
 
     async saveTimetableOptimistic(applyChange, successMessage = 'Saved') {
@@ -2808,7 +2845,7 @@ class SmartMentorChatbot {
         const snapshot = JSON.parse(JSON.stringify(this.timetable));
         try {
             applyChange(this.timetable);
-        } catch (_) {}
+        } catch (_) { }
         this.renderTimetable();
         try {
             const payload = { ...this.timetable };
@@ -2827,7 +2864,7 @@ class SmartMentorChatbot {
                     this.showToast('Detected a newer version. Syncing…', 'warning');
                     const latest = await window.api.getTimetable();
                     this.timetable = this.normalizeTimetable(latest);
-                    try { applyChange(this.timetable); } catch (_) {}
+                    try { applyChange(this.timetable); } catch (_) { }
                     const saved2 = await window.api.saveTimetable(this.timetable);
                     this.timetable = this.normalizeTimetable(saved2);
                     this.showToast(successMessage, 'success');
@@ -2914,7 +2951,7 @@ class SmartMentorChatbot {
         if (labelEl) labelEl.textContent = current.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
         container.innerHTML = '';
         const monthName = current.toLocaleDateString('en-US', { month: 'long' });
-        
+
         for (let i = 0; i < startDay; i++) {
             container.insertAdjacentHTML('beforeend', '<div class="calendar__day calendar__day--empty"></div>');
         }
@@ -2922,7 +2959,7 @@ class SmartMentorChatbot {
             const dateObj = new Date(year, month, d);
             const key = dateObj.toISOString().slice(0, 10);
             const events = this.calendarState.eventsByDate?.[key] || [];
-            
+
             const cell = document.createElement('button');
             cell.className = 'calendar__day';
             cell.textContent = d;
@@ -2933,9 +2970,9 @@ class SmartMentorChatbot {
             cell.setAttribute('aria-label', `${monthName} ${d}, ${year}${eventSuffix}`);
             if (events.length) cell.classList.add('calendar__day--has-events');
 
-            cell.addEventListener('click', (e) => { 
-                this.createRipple(e, cell); 
-                this.selectCalendarDate(dateObj); 
+            cell.addEventListener('click', (e) => {
+                this.createRipple(e, cell);
+                this.selectCalendarDate(dateObj);
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 this.handleCalendarDayClick(dateStr);
             });
@@ -2948,22 +2985,22 @@ class SmartMentorChatbot {
         const modal = this.elements.dayDetailModal;
         const dateDisplay = this.elements.dayDetailDate;
         const modalBody = modal.querySelector('.modal-body');
-        
+
         if (!modal || !dateDisplay) return;
-        
+
         // Format date nicely
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         dateDisplay.textContent = date.toLocaleDateString('en-US', options);
-        
+
         // Get tasks and events for this day
         const dayTasks = this.tasks.filter(task => {
             if (!task.dueDate) return false;
             const taskDate = new Date(task.dueDate);
             return taskDate.toDateString() === date.toDateString();
         });
-        
+
         const dayEvents = this.calendarState.eventsByDate[dateStr] || [];
-        
+
         // Build summary HTML
         let summaryHTML = `
             <div class="day-summary">
@@ -2982,7 +3019,7 @@ class SmartMentorChatbot {
                     </div>
                 </div>
         `;
-        
+
         if (dayTasks.length > 0) {
             summaryHTML += `
                 <div class="day-summary__section">
@@ -2999,7 +3036,7 @@ class SmartMentorChatbot {
                 </div>
             `;
         }
-        
+
         if (dayEvents.length > 0) {
             summaryHTML += `
                 <div class="day-summary__section">
@@ -3015,7 +3052,7 @@ class SmartMentorChatbot {
                 </div>
             `;
         }
-        
+
         if (dayTasks.length === 0 && dayEvents.length === 0) {
             summaryHTML += `
                 <div class="day-summary__empty">
@@ -3029,16 +3066,16 @@ class SmartMentorChatbot {
                 </div>
             `;
         }
-        
+
         summaryHTML += '</div>';
-        
+
         // Replace modal body content
         const existingSummary = modalBody.querySelector('.day-summary');
         if (existingSummary) {
             existingSummary.remove();
         }
         modalBody.insertAdjacentHTML('afterbegin', summaryHTML);
-        
+
         // Show modal
         this.openModal('day-detail-modal');
     }
@@ -3091,6 +3128,6 @@ style.textContent = `@keyframes spin { from { transform: rotate(0deg); } to { tr
 document.head.appendChild(style);
 
 document.addEventListener('DOMContentLoaded', () => {
-    try { document.documentElement.classList.add('js-animate'); requestAnimationFrame(() => { document.documentElement.classList.add('page-ready'); }); } catch (_) {}
+    try { document.documentElement.classList.add('js-animate'); requestAnimationFrame(() => { document.documentElement.classList.add('page-ready'); }); } catch (_) { }
     window.smartMentor = new SmartMentorChatbot();
 });
