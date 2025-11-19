@@ -1,0 +1,6 @@
+/* Aggregator stylesheet maintained for backward compatibility.
+   The actual styles are modularized into base, layout, and components.
+*/
+@import url('public/css/base.css');
+@import url('public/css/layout.css');
+@import url('public/css/components.css');

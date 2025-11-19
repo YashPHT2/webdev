@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Mentor – Learning Path</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="public/css/base.css" />
+  <link rel="stylesheet" href="public/css/layout.css" />
+  <link rel="stylesheet" href="public/css/components.css" />
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar__header">
+        <div class="sidebar__brand">
+          <svg class="sidebar__brand-icon" width="32" height="32" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+          <div class="sidebar__brand-text"><h1 class="sidebar__brand-title">Smart Mentor</h1><span class="sidebar__brand-subtitle">Academic Companion</span></div>
+        </div>
+        <button class="sidebar__toggle" id="sidebar-toggle" aria-label="Toggle sidebar" aria-expanded="true" aria-controls="sidebar"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+      </div>
+      <nav class="sidebar__nav">
+        <ul class="sidebar__nav-list" role="list">
+          <li class="sidebar__nav-item"><a href="index.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg><span>Dashboard</span></a></li>
+          <li class="sidebar__nav-item"><a href="assignments.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg><span>Assignments</span></a></li>
+          <li class="sidebar__nav-item"><a href="timetable.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg><span>Timetable</span></a></li>
+          <li class="sidebar__nav-item"><a href="progress.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg><span>Progress</span></a></li>
+          <li class="sidebar__nav-item"><a href="calendar.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><rect x="7" y="14" width="3" height="3"></rect></svg><span>Calendar</span></a></li>
+          <li class="sidebar__nav-item"><a href="subjects.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg><span>Subjects</span></a></li>
+          <li class="sidebar__nav-item"><a href="learning-path.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 3h18v4H3z"></path><path d="M7 7v14"></path></svg><span>Learning Path</span></a></li>
+          <li class="sidebar__nav-item"><a href="assessment.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="14" rx="2"></rect><path d="M7 7h10M7 11h6"></path></svg><span>Assessment</span></a></li>
+          <li class="sidebar__nav-item"><a href="analytics.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg><span>Analytics</span></a></li>
+          <li class="sidebar__nav-item"><a href="ai-mentor.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg><span>AI Mentor</span></a></li>
+        </ul>
+      </nav>
+      <div class="sidebar__footer">
+        <button class="sidebar__action-button chatbot-trigger-button" id="chatbot-trigger" aria-label="Open AI mentor chat"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg><span>AI Mentor</span><span class="sidebar__notification-badge" id="chat-notification" aria-label="Unread messages"></span></button>
+        <div class="sidebar__user"><div class="sidebar__user-avatar" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div><div class="sidebar__user-info"><span class="sidebar__user-name">Student</span><span class="sidebar__user-role">Active</span></div></div>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="dashboard-header" role="banner">
+        <div class="dashboard-header__content">
+          <div class="dashboard-header__title-section">
+            <h1 class="dashboard-header__title">Learning Path</h1>
+            <p class="dashboard-header__subtitle">Plan and monitor your learning journey.</p>
+          </div>
+          <div class="dashboard-header__actions">
+            <button class="primary-button" id="add-task" aria-label="Add new task"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>Add Task</span></button>
+          </div>
+        </div>
+      </header>
+      <main class="dashboard-content" role="main">
+        <section class="kpi-grid" role="region" aria-label="Learning path summary">
+          <div class="kpi-card" tabindex="0" title="Total number of tasks">
+            <div class="kpi-content"><div class="kpi-label">Total Tasks</div><div class="kpi-value" id="lp-kpi-total">—</div></div>
+          </div>
+          <div class="kpi-card" tabindex="0" title="Overall completion rate">
+            <div class="kpi-donut" style="--kpi-progress: 0%" aria-hidden="true"></div>
+            <div class="kpi-content"><div class="kpi-label">Completion</div><div class="kpi-value" id="lp-kpi-completion">—%</div></div>
+          </div>
+          <div class="kpi-card" tabindex="0" title="Number of subjects with tasks">
+            <div class="kpi-content"><div class="kpi-label">Subjects</div><div class="kpi-value" id="lp-kpi-subjects">—</div></div>
+          </div>
+        </section>
+
+        <div class="dashboard-grid">
+          <section class="dashboard-card" aria-labelledby="lpPriorityTitle">
+            <div class="dashboard-card__header">
+              <div class="dashboard-card__title-group">
+                <h2 class="dashboard-card__title" id="lpPriorityTitle">Priority Tasks</h2>
+                <span class="dashboard-card__badge" id="lp-priority-count">—</span>
+              </div>
+              <a class="icon-button" href="assignments.html" aria-label="Go to assignments">↗</a>
+            </div>
+            <div class="dashboard-card__content" style="padding:0 1.25rem 1.25rem">
+              <div id="priority-task-list" class="assignment-list" role="list"></div>
+              <div id="lp-priority-empty" class="empty-state" style="display:none"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="15" x2="16" y2="15"></line></svg><h3>No priority tasks</h3><p>Create tasks and mark them high priority to see them here.</p></div>
+            </div>
+          </section>
+
+          <section class="dashboard-card" aria-labelledby="lpPlanTitle">
+            <div class="dashboard-card__header">
+              <div class="dashboard-card__title-group">
+                <h2 class="dashboard-card__title" id="lpPlanTitle">Study Plan</h2>
+              </div>
+              <div class="progress-view-toggle" role="group" aria-label="Plan view selector">
+                <button class="progress-view-toggle__button progress-view-toggle__button--active" data-lp-plan="day" aria-pressed="true">Day</button>
+                <button class="progress-view-toggle__button" data-lp-plan="week" aria-pressed="false">Week</button>
+              </div>
+            </div>
+            <div class="dashboard-card__content">
+              <div id="lp-plan-loading" class="skeleton" aria-hidden="true"></div>
+              <div id="lp-plan-grid" class="timetable-grid" style="display:none"></div>
+              <div id="lp-plan-empty" class="empty-state" style="display:none"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="15" x2="16" y2="15"></line></svg><h3>No plan yet</h3><p>Add tasks with estimates or due dates to generate a study plan.</p></div>
+            </div>
+          </section>
+
+          <section class="dashboard-card" aria-labelledby="lpTrendTitle">
+            <div class="dashboard-card__header">
+              <div class="dashboard-card__title-group"><h2 class="dashboard-card__title" id="lpTrendTitle">Tasks Over Time</h2></div>
+              <div class="progress-view-toggle" role="group" aria-label="Period selector">
+                <button class="progress-view-toggle__button progress-view-toggle__button--active" data-period="day" aria-pressed="true">Day</button>
+                <button class="progress-view-toggle__button" data-period="week" aria-pressed="false">Week</button>
+                <button class="progress-view-toggle__button" data-period="month" aria-pressed="false">Month</button>
+              </div>
+            </div>
+            <div class="dashboard-card__content" style="min-height:260px">
+              <div id="lp-trend-loading" class="skeleton" aria-hidden="true"></div>
+              <canvas id="lpTrendChart" class="chart-enter" role="img" aria-label="Area chart showing tasks over selected period" style="display:none; width:100%; height:220px"></canvas>
+              <div id="lp-trend-empty" class="empty-state" style="display:none"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="15" x2="16" y2="15"></line></svg><h3>No data</h3><p>There are no tasks in this period.</p></div>
+            </div>
+          </section>
+
+          <section class="dashboard-card" aria-labelledby="lpSubjectSplitTitle">
+            <div class="dashboard-card__header"><h2 class="dashboard-card__title" id="lpSubjectSplitTitle">Tasks by Subject</h2></div>
+            <div class="dashboard-card__content" style="min-height:260px">
+              <div id="lp-subject-loading" class="skeleton" aria-hidden="true"></div>
+              <canvas id="lpSubjectDoughnut" class="chart-enter" role="img" aria-label="Doughnut chart showing distribution of tasks by subject" style="display:none; width:100%; height:220px"></canvas>
+              <div id="lp-subject-empty" class="empty-state" style="display:none"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="15" x2="16" y2="15"></line></svg><h3>No subjects yet</h3><p>Create tasks and assign subjects to see this breakdown.</p></div>
+            </div>
+          </section>
+
+          <section class="dashboard-card" aria-labelledby="lpHoursTitle">
+            <div class="dashboard-card__header"><h2 class="dashboard-card__title" id="lpHoursTitle">Hours by Subject</h2></div>
+            <div class="dashboard-card__content" style="min-height:260px">
+              <div id="lp-hours-loading" class="skeleton" aria-hidden="true"></div>
+              <canvas id="lpHoursBar" class="chart-enter" role="img" aria-label="Bar chart comparing estimated and actual hours by subject" style="display:none; width:100%; height:220px"></canvas>
+              <div id="lp-hours-empty" class="empty-state" style="display:none"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="15" x2="16" y2="15"></line></svg><h3>No hour data</h3><p>Add estimated (and actual) durations on tasks to see hours per subject.</p></div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <button id="add-task-fab" aria-label="Add Task" title="Add Task"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg><span class="sr-only">Add Task</span></button>
+
+  <!-- Chatbot + Modals -->
+  <div id="chatbot-modal" class="chatbot-modal" role="dialog" aria-labelledby="chatbot-title" aria-modal="true" hidden>
+    <div class="chatbot-container chatbot-modal__container">
+      <div class="chatbot-header chatbot-modal__header">
+        <div class="chatbot-title-section chatbot-modal__title-section"><div class="mentor-avatar chatbot-modal__avatar"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg></div><div><h2 id="chatbot-title">Smart Mentor</h2><span class="chatbot-status chatbot-modal__status">Online</span></div></div>
+        <div class="chatbot-header__actions"><button id="reset-chat" class="icon-button chatbot-modal__reset-button" aria-label="Reset conversation"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg></button><button id="close-chatbot" class="close-button chatbot-modal__close-button" aria-label="Close chatbot"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div>
+      </div>
+      <div id="chatbot-messages" class="chatbot-messages chatbot-modal__messages" role="log" aria-live="polite" aria-atomic="false"></div>
+      <div id="chat-aria-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+      <div class="chatbot-input-container chatbot-modal__input-container">
+        <form id="chatbot-form" class="chatbot-input-form chatbot-modal__form">
+          <textarea id="chatbot-input" class="chatbot-input chatbot-modal__input" placeholder="Type your message..." rows="1" aria-label="Chat message input" autocomplete="off"></textarea>
+          <button type="submit" id="send-button" class="send-button chatbot-modal__send-button" aria-label="Send message" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div id="chatbot-overlay" class="chatbot-overlay" hidden></div>
+
+  <div id="task-modal-overlay" class="modal-overlay" hidden></div>
+  <div id="task-form-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="task-form-title" hidden>
+    <div class="modal-content"><div class="modal-header"><h2 id="task-form-title">Add Task</h2><button type="button" class="icon-button modal-close" data-close-modal="task-form-modal" aria-label="Close task form"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><form id="task-form" class="modal-form"><input type="hidden" id="task-form-id"><div class="form-group"><label for="task-form-title-input">Title</label><input id="task-form-title-input" name="title" type="text" required placeholder="Enter task title"></div><div class="form-group"><label for="task-form-description">Description</label><textarea id="task-form-description" name="description" rows="3" placeholder="Add details or requirements"></textarea></div><div class="form-row"><div class="form-group"><label for="task-form-subject">Subject</label><input id="task-form-subject" name="subject" type="text" placeholder="e.g., Calculus"></div><div class="form-group"><label for="task-form-due-date">Due Date</label><input id="task-form-due-date" name="dueDate" type="date"></div></div><div class="form-row"><div class="form-group"><label for="task-form-priority">Priority</label><select id="task-form-priority" name="priority" required><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div><div class="form-group"><label for="task-form-progress">Progress</label><div class="progress-input"><input id="task-form-progress" name="progress" type="range" min="0" max="100" step="5" value="0"><span id="task-form-progress-value">0%</span></div></div></div><div class="modal-actions"><button type="button" class="secondary-button" data-close-modal="task-form-modal">Cancel</button><button type="submit" class="primary-button" id="task-form-submit">Save Task</button></div></form></div>
+  </div>
+
+  <div id="day-detail-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="day-detail-title" hidden>
+    <div class="modal-content"><div class="modal-header"><h2 id="day-detail-title">Day Summary</h2><button type="button" class="icon-button modal-close" data-close-modal="day-detail-modal" aria-label="Close day details"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="modal-body"><p id="day-detail-date">—</p></div><div class="modal-actions"><button type="button" class="secondary-button" disabled>Add Event (stub)</button><button type="button" class="primary-button" data-close-modal="day-detail-modal">Close</button></div></div>
+  </div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="public/js/api.js"></script>
+  <script src="public/js/chatbot.js"></script>
+  <script src="script.js"></script>
+  <script src="public/js/modules/utils.js"></script>
+  <script src="public/js/modules/nav.js"></script>
+  <script src="public/js/modules/main.js"></script>
+  <script defer src="public/js/modules/learning-path-page.js"></script>
+</body>
+</html>

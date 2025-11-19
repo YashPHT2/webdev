@@ -1,0 +1,10 @@
+[
+  {
+    "sessionId": "session_1",
+    "messages": [
+      { "role": "user", "content": "Hello", "timestamp": "2025-10-19T00:00:00.000Z" },
+      { "role": "assistant", "content": "Hi! How can I help you today?", "timestamp": "2025-10-19T00:00:00.000Z" }
+    ],
+    "status": "active"
+  }
+]

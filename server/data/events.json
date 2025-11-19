@@ -1,0 +1,4 @@
+[
+  { "id": "e1", "title": "Math Midterm", "date": "2025-10-24T00:00:00.000Z", "subject": "Mathematics", "type": "exam" },
+  { "id": "e2", "title": "Chemistry Quiz", "date": "2025-10-21T00:00:00.000Z", "subject": "Chemistry", "type": "quiz" }
+]

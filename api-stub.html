@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Stub - Smart Academic Mentor</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        h1 { color: #4F46E5; }
+        pre {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+        }
+        .section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Smart Academic Mentor - API Documentation</h1>
+    
+    <div class="section">
+        <h2>POST /api/chat</h2>
+        <h3>Request Format</h3>
+        <pre>{
+  "message": "I want to create a task",
+  "conversationHistory": [
+    {
+      "role": "user",
+      "content": "I want to create a task"
+    }
+  ],
+  "currentStep": null,
+  "taskData": {}
+}</pre>
+
+        <h3>Response Format (Task Creation Flow)</h3>
+        <pre>{
+  "message": "Great! Let's create a new study task. What subject is this for?",
+  "currentStep": "task_creation_description",
+  "taskData": {
+    "subject": "Mathematics"
+  },
+  "actions": [],
+  "taskCreated": false
+}</pre>
+
+        <h3>Response Format (Task Created)</h3>
+        <pre>{
+  "message": "Perfect! I've created your task.",
+  "currentStep": null,
+  "taskData": {},
+  "actions": [],
+  "taskCreated": true,
+  "task": {
+    "title": "Complete Algebra Homework",
+    "description": "Solve problems 1-20 from chapter 5",
+    "subject": "Mathematics",
+    "dueDate": "2024-10-25",
+    "priority": "High",
+    "completed": false
+  },
+  "motivational": "Great job! You're building excellent study habits! 🎉"
+}</pre>
+    </div>
+
+    <div class="section">
+        <h2>Multi-Step Conversation Flow</h2>
+        <p>The chatbot supports the following conversation steps:</p>
+        <ul>
+            <li><code>task_creation_subject</code> - Asking for subject</li>
+            <li><code>task_creation_description</code> - Asking for description/details</li>
+            <li><code>task_creation_duedate</code> - Asking for due date</li>
+            <li><code>task_creation_priority</code> - Asking for priority level</li>
+            <li><code>study_plan_goal</code> - Asking for study plan goal</li>
+            <li><code>study_plan_subject</code> - Asking for study plan subject</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Implementation Notes</h2>
+        <ul>
+            <li>The chatbot gracefully handles API failures with offline mode</li>
+            <li>All conversation data is persisted in localStorage</li>
+            <li>Tasks are stored locally and can be toggled as complete/incomplete</li>
+            <li>Typing indicators appear during API communication</li>
+            <li>Smooth animations and transitions throughout</li>
+            <li>Full keyboard navigation and ARIA support</li>
+            <li>Dark mode with persistent theme preference</li>
+            <li>Responsive design for mobile, tablet, and desktop</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Testing the Implementation</h2>
+        <ol>
+            <li>Open <a href="index.html">index.html</a> in your browser</li>
+            <li>Click the "Chat" button in the header</li>
+            <li>Try the quick action buttons or type a message</li>
+            <li>Since the API endpoint doesn't exist yet, the chatbot will use offline mode</li>
+            <li>Test task creation flow by clicking "Create Task"</li>
+            <li>Toggle dark mode with the theme button</li>
+            <li>Test responsive design by resizing the browser window</li>
+        </ol>
+    </div>
+</body>
+</html>

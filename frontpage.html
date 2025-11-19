@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Academic Mentor | Logic-Based Study Plans</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- GSAP Core, ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <!-- Lenis (Smooth Scroll) -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
+    <!-- Google Font: Space Grotesk (More Brutalist) & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@400;700;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* --- CORE SETUP --- */
+        :root {
+            --c-bg: #f5f5f5;
+            --c-text: #111;
+            --c-cyan: #22d3ee;
+            --c-lime: #a3e635;
+            --c-yellow: #fde047;
+            --c-black: #0a0a0a;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--c-bg);
+            color: var(--c-text);
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- GRAIN OVERLAY (Texture) --- */
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+        }
+
+        /* --- NEO-BRUTALIST UTILS --- */
+        .border-thick {
+            border: 4px solid var(--c-black);
+        }
+
+        .shadow-hard {
+            box-shadow: 10px 10px 0px var(--c-black);
+        }
+
+        .shadow-hard-cyan {
+            box-shadow: 10px 10px 0px var(--c-cyan);
+        }
+
+        .shadow-hard-lime {
+            box-shadow: 10px 10px 0px var(--c-lime);
+        }
+
+        /* --- TEXT REVEAL HELPERS --- */
+        .char-wrap {
+            display: inline-block;
+            overflow: hidden;
+            vertical-align: top;
+        }
+
+        .char {
+            display: inline-block;
+            transform: translateY(100%);
+        }
+
+        /* --- MARQUEE --- */
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            white-space: nowrap;
+        }
+
+        .marquee-content {
+            display: flex;
+            animation: scrollText 20s linear infinite;
+        }
+
+        @keyframes scrollText {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* --- FOOTER PARALLAX --- */
+        .main-wrapper {
+            position: relative;
+            z-index: 2;
+            background-color: var(--c-bg);
+            margin-bottom: 80vh;
+            /* Height of footer */
+            box-shadow: 0px 50px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .sticky-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80vh;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #000;
+        }
+
+        /* --- ACCORDION --- */
+        .accordion-item {
+            border-bottom: 2px solid black;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            cursor: pointer;
+        }
+
+        .accordion-content {
+            height: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ASSETS -->
+    <div class="grain-overlay"></div>
+
+    <!-- CONTENT WRAPPER -->
+    <div class="main-wrapper">
+
+        <!-- HEADER -->
+        <header class="w-full px-6 py-6 fixed top-0 z-50 transition-transform duration-300" id="navbar">
+            <div
+                class="max-w-[95%] mx-auto bg-white border-thick shadow-hard flex justify-between items-center p-4 rounded-xl">
+                <div class="text-2xl md:text-3xl font-black uppercase tracking-tighter">
+                    SMART<span class="text-cyan-400">MENTOR</span>
+                </div>
+                <nav class="hidden md:flex items-center gap-8">
+                    <a href="#manifesto" class="font-bold text-lg hover:text-cyan-500 transition-colors">The Problem</a>
+                    <a href="#process" class="font-bold text-lg hover:text-cyan-500 transition-colors">How It Works</a>
+                    <a href="#features" class="font-bold text-lg hover:text-cyan-500 transition-colors">Features</a>
+                </nav>
+                <div>
+                    <a href="/login-new"
+                        class="block bg-black text-white font-bold py-3 px-8 rounded-lg border-2 border-transparent hover:bg-cyan-400 hover:text-black hover:border-black transition-colors">
+                        ASK THE BOT
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- HERO SECTION -->
+        <section class="min-h-screen flex flex-col justify-center items-center pt-32 px-4 relative overflow-hidden">
+            <!-- Background Blobs -->
+            <div
+                class="absolute top-1/4 left-10 w-96 h-96 bg-cyan-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse">
+            </div>
+            <div class="absolute bottom-1/4 right-10 w-96 h-96 bg-lime-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"
+                style="animation-delay: 1s"></div>
+
+            <div class="relative z-10 text-center max-w-6xl mx-auto">
+                <div class="overflow-hidden mb-2">
+                    <p
+                        class="text-lg md:text-xl font-bold uppercase tracking-widest text-gray-500 reveal-text opacity-0">
+                        Decision Fatigue: Solved.
+                    </p>
+                </div>
+
+                <h1 class="text-[14vw] leading-[0.85] font-black uppercase tracking-tighter mb-6">
+                    <div class="overflow-hidden"><span class="block reveal-char-anim">Study</span></div>
+                    <div class="overflow-hidden text-cyan-400"><span class="block reveal-char-anim">Solved.</span></div>
+                </h1>
+
+                <p class="text-xl md:text-3xl font-medium max-w-2xl mx-auto mb-12 reveal-text opacity-0">
+                    Stop guessing what to study. Our <span
+                        class="bg-yellow-300 px-2 border-2 border-black transform -rotate-2 inline-block">chatbot
+                        mentor</span> analyzes your deadlines, difficulty, and prep level to tell you exactly what to do
+                    right now.
+                </p>
+
+                <div class="flex flex-col md:flex-row gap-6 justify-center items-center reveal-text opacity-0">
+                    <div>
+                        <a href="/login-new"
+                            class="inline-block bg-lime-400 border-thick shadow-hard text-black font-black text-xl py-5 px-12 rounded-none hover:bg-lime-300 hover:shadow-none transition-all">
+                            PRIORITIZE NOW
+                        </a>
+                    </div>
+                    <div>
+                        <a href="#manifesto"
+                            class="inline-block bg-white border-thick shadow-hard text-black font-bold text-xl py-5 px-12 rounded-none hover:bg-gray-100 transition-all">
+                            SEE THE LOGIC
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MARQUEE STRIP (Added mt-24 to move down) -->
+        <div class="w-full bg-black text-white border-y-4 border-black py-6 rotate-1 scale-105 z-20 relative mt-24">
+            <div class="marquee-container">
+                <div class="marquee-content text-5xl font-black uppercase tracking-tight">
+                    <span class="mx-8">Calculate Priority</span> •
+                    <span class="mx-8 text-cyan-400">Break The Ties</span> •
+                    <span class="mx-8">Beat The Deadline</span> •
+                    <span class="mx-8 text-lime-400">Smart Mentor</span> •
+                    <span class="mx-8">Daily Plan</span> •
+                    <span class="mx-8 text-yellow-300">Pure Logic</span> •
+                </div>
+                <div class="marquee-content text-5xl font-black uppercase tracking-tight" aria-hidden="true">
+                    <span class="mx-8">Calculate Priority</span> •
+                    <span class="mx-8 text-cyan-400">Break The Ties</span> •
+                    <span class="mx-8">Beat The Deadline</span> •
+                    <span class="mx-8 text-lime-400">Smart Mentor</span> •
+                    <span class="mx-8">Daily Plan</span> •
+                    <span class="mx-8 text-yellow-300">Pure Logic</span> •
+                </div>
+            </div>
+        </div>
+
+        <!-- MANIFESTO (STICKY SCROLL) -->
+        <section id="manifesto" class="min-h-[200vh] relative bg-white py-32">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col md:flex-row gap-20">
+                    <!-- Sticky Left Side -->
+                    <div class="md:w-1/2 h-fit sticky top-32">
+                        <h2 class="text-7xl md:text-9xl font-black uppercase leading-none mb-8">
+                            The <br> <span class="text-cyan-400">Trap</span> <br> Door.
+                        </h2>
+                        <p class="text-2xl font-bold text-gray-400">
+                            Why standard to-do lists fail students.
+                        </p>
+                    </div>
+
+                    <!-- Scrollable Right Side -->
+                    <div class="md:w-1/2 flex flex-col gap-32 mt-20 md:mt-0">
+
+                        <!-- Card 1 -->
+                        <div class="manifesto-card bg-[#f0f0f0] p-10 border-thick rounded-2xl" data-color="#f0f0f0">
+                            <div class="text-6xl mb-4">😵‍💫</div>
+                            <h3 class="text-4xl font-black uppercase mb-4">The Choice Paralysis</h3>
+                            <p class="text-xl font-medium leading-relaxed">
+                                You have Math, History, and Science. You stare at the pile. You get confused about where
+                                to start. You end up doing nothing.
+                            </p>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="manifesto-card bg-yellow-300 p-10 border-thick shadow-hard rounded-2xl"
+                            data-color="#fde047">
+                            <div class="text-6xl mb-4">⚖️</div>
+                            <h3 class="text-4xl font-black uppercase mb-4">The Tie-Breaker</h3>
+                            <p class="text-xl font-medium leading-relaxed">
+                                When two deadlines are tomorrow, which one do you pick? Normal apps can't decide. Our
+                                scoring system calculates urgency vs. difficulty to break the tie.
+                            </p>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="manifesto-card bg-cyan-400 p-10 border-thick shadow-hard-lime rounded-2xl"
+                            data-color="#22d3ee">
+                            <div class="text-6xl mb-4">🧠</div>
+                            <h3 class="text-4xl font-black uppercase mb-4">The Mentor Logic</h3>
+                            <p class="text-xl font-medium leading-relaxed">
+                                It's not just a planner; it's a Mentor. It knows if you haven't started revision yet and
+                                adjusts your priority score instantly.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HORIZONTAL SCROLL (PROCESS) -->
+        <section id="process" class="bg-black text-white relative z-10">
+            <div class="h-screen sticky top-0 overflow-hidden horizontal-trigger">
+                <div class="absolute top-10 left-10 z-20">
+                    <h2 class="text-white text-4xl font-bold uppercase border-b-4 border-cyan-400 pb-2">How It Works
+                    </h2>
+                </div>
+
+                <div class="horizontal-track flex h-full w-[400%]">
+
+                    <!-- Step 1 -->
+                    <div class="w-screen h-full flex items-center justify-center bg-[#111] border-r border-gray-800">
+                        <div class="text-center max-w-2xl px-4">
+                            <h3 class="text-[12vw] font-black text-gray-800 leading-none select-none">01</h3>
+                            <div class="mt-[-4vw] relative z-10">
+                                <h4 class="text-5xl md:text-7xl font-bold uppercase text-cyan-400 mb-6">Chatbot Input
+                                </h4>
+                                <p class="text-2xl text-gray-300">No boring forms. Our bot asks: "How urgent is the
+                                    deadline?", "How difficult is the subject?", "Is prep done?"</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="w-screen h-full flex items-center justify-center bg-[#111] border-r border-gray-800">
+                        <div class="text-center max-w-2xl px-4">
+                            <h3 class="text-[12vw] font-black text-gray-800 leading-none select-none">02</h3>
+                            <div class="mt-[-4vw] relative z-10">
+                                <h4 class="text-5xl md:text-7xl font-bold uppercase text-lime-400 mb-6">Logical Scoring
+                                </h4>
+                                <p class="text-2xl text-gray-300">The system assigns a weighted score. High Difficulty +
+                                    Low Revision + Close Deadline = <span class="text-white font-bold">Top
+                                        Priority.</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="w-screen h-full flex items-center justify-center bg-[#111] border-r border-gray-800">
+                        <div class="text-center max-w-2xl px-4">
+                            <h3 class="text-[12vw] font-black text-gray-800 leading-none select-none">03</h3>
+                            <div class="mt-[-4vw] relative z-10">
+                                <h4 class="text-5xl md:text-7xl font-bold uppercase text-yellow-300 mb-6">The Verdict
+                                </h4>
+                                <p class="text-2xl text-gray-300">We generate a clear Daily Plan. We break the ties so
+                                    you don't have to. Just follow the list.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="w-screen h-full flex items-center justify-center bg-cyan-400 text-black">
+                        <div class="text-center max-w-3xl px-4">
+                            <h4 class="text-6xl md:text-8xl font-black uppercase mb-8">Plan Ready.</h4>
+                            <div>
+                                <a href="/login-new"
+                                    class="inline-block bg-black text-white border-thick px-12 py-6 text-2xl font-bold hover:bg-white hover:text-black transition-colors">
+                                    ENTER DASHBOARD
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- BENTO GRID FEATURES -->
+        <section id="features" class="py-32 px-6 bg-gray-100">
+            <div class="container mx-auto max-w-7xl">
+                <h2 class="text-6xl md:text-9xl font-black uppercase mb-20 text-center">
+                    The <span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Arsenal.</span>
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(300px,auto)]">
+
+                    <!-- Large Card -->
+                    <div
+                        class="md:col-span-2 bg-white border-thick p-8 rounded-3xl relative overflow-hidden group tilt-card">
+                        <div
+                            class="absolute top-0 right-0 w-64 h-64 bg-cyan-100 rounded-full -mr-20 -mt-20 transition-transform duration-500 group-hover:scale-150">
+                        </div>
+                        <h3 class="text-4xl font-bold uppercase mb-4 relative z-10">Automatic Prioritization</h3>
+                        <p class="text-xl text-gray-600 relative z-10 max-w-md">
+                            If Subject A is "Hard" and Subject B is "Easy", but both are due tomorrow, our logic engine
+                            tells you to tackle the beast first.
+                        </p>
+                        <div
+                            class="mt-8 relative z-10 bg-black text-white inline-block px-4 py-2 rounded-full font-mono">
+                            AI-Logic v1.0</div>
+                    </div>
+
+                    <!-- Tall Card -->
+                    <div
+                        class="md:row-span-2 bg-lime-400 border-thick p-8 rounded-3xl flex flex-col justify-between tilt-card">
+                        <div>
+                            <h3 class="text-4xl font-bold uppercase mb-4">Daily Plan</h3>
+                            <p class="text-xl font-bold">
+                                A clean, simple dashboard showing your optimized study order for the day. No clutter.
+                            </p>
+                        </div>
+                        <div class="text-9xl text-center my-4">📅</div>
+                    </div>
+
+                    <!-- Standard Card -->
+                    <div class="bg-white border-thick p-8 rounded-3xl tilt-card">
+                        <h3 class="text-3xl font-bold uppercase mb-4">Tie Breaker</h3>
+                        <p class="text-lg text-gray-600">Two exams on the same day? We calculate which one you are least
+                            prepared for.</p>
+                    </div>
+
+                    <!-- Standard Card -->
+                    <div class="bg-black text-white border-thick border-gray-800 p-8 rounded-3xl tilt-card">
+                        <h3 class="text-3xl font-bold uppercase mb-4 text-yellow-300">Motivation</h3>
+                        <p class="text-lg text-gray-400">Integrated tips and motivational boosts to keep you from
+                            burning out.</p>
+                    </div>
+
+                    <!-- Wide Card -->
+                    <div
+                        class="md:col-span-3 bg-white border-thick p-10 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div>
+                            <h3 class="text-4xl md:text-5xl font-black uppercase mb-2">It's Your Personal Mentor.</h3>
+                            <p class="text-xl text-gray-600">Guidance, not just a list.</p>
+                        </div>
+                        <a href="/login-new"
+                            class="bg-cyan-400 border-thick px-10 py-4 text-xl font-bold hover:bg-cyan-300 transition-colors text-black no-underline inline-block">
+                            Start Planning Free
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ ACCORDION -->
+        <section class="py-32 px-6 bg-white">
+            <div class="container mx-auto max-w-5xl">
+                <h2 class="text-2xl font-bold uppercase mb-12 border-b-4 border-black pb-4">Freq. Asked Questions</h2>
+
+                <div class="space-y-0">
+
+                    <!-- Item 1 -->
+                    <div class="accordion-item group">
+                        <div class="accordion-header py-10 flex justify-between items-center">
+                            <h3
+                                class="text-3xl md:text-4xl font-bold uppercase group-hover:text-cyan-500 transition-colors">
+                                How does it decide what I study?</h3>
+                            <span
+                                class="text-4xl font-light transform transition-transform duration-300 group-hover:rotate-45">+</span>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="pb-10 text-xl max-w-3xl">We ask you 4 key questions: Deadline proximity, Subject
+                                difficulty, Prep status, and Revision status. We multiply these factors to create an
+                                "Urgency Score."</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="accordion-item group">
+                        <div class="accordion-header py-10 flex justify-between items-center">
+                            <h3
+                                class="text-3xl md:text-4xl font-bold uppercase group-hover:text-lime-500 transition-colors">
+                                Is this just a To-Do List?</h3>
+                            <span
+                                class="text-4xl font-light transform transition-transform duration-300 group-hover:rotate-45">+</span>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="pb-10 text-xl max-w-3xl">No. To-do lists are passive. Smart Mentor is active. It
+                                tells you the *order* based on logic, acting as a guide rather than just a notepad.</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="accordion-item group">
+                        <div class="accordion-header py-10 flex justify-between items-center">
+                            <h3
+                                class="text-3xl md:text-4xl font-bold uppercase group-hover:text-fuchsia-500 transition-colors">
+                                Does it help with motivation?</h3>
+                            <span
+                                class="text-4xl font-light transform transition-transform duration-300 group-hover:rotate-45">+</span>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="pb-10 text-xl max-w-3xl">Yes. The dashboard provides motivational tips and tracks
+                                your progress to give you that dopamine hit when you finish a high-priority task.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SPACER FOR PARALLAX FOOTER -->
+        <div class="h-20 bg-white"></div>
+    </div>
+    <!-- END OF MAIN WRAPPER -->
+
+    <!-- STICKY PARALLAX FOOTER -->
+    <footer class="sticky-footer text-center text-white flex flex-col justify-center items-center px-4" id="start">
+        <div class="relative z-10 max-w-4xl">
+            <p class="text-cyan-400 font-bold tracking-widest uppercase mb-6">Your Personal Study Assistant</p>
+            <h2 class="text-[10vw] leading-[0.8] font-black uppercase mb-10">
+                Get <span
+                    class="text-outline-white text-transparent hover:text-lime-400 transition-colors duration-300">Focused</span>
+            </h2>
+            <a href="/login-new"
+                class="inline-block bg-white text-black border-4 border-white hover:bg-black hover:text-white px-12 py-6 text-2xl font-black uppercase transition-all duration-300">
+                Start Chatbot
+            </a>
+        </div>
+        <div class="absolute bottom-10 w-full flex justify-between px-10 text-sm text-gray-500 uppercase font-bold">
+            <span>© 2025 Smart Mentor.</span>
+            <span>Constructed with Logic</span>
+        </div>
+
+        <!-- Footer BG Animation -->
+        <div
+            class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-700 via-black to-black">
+        </div>
+    </footer>
+
+    <!-- STYLE FOR OUTLINE TEXT IN FOOTER -->
+    <style>
+        .text-outline-white {
+            -webkit-text-stroke: 2px white;
+        }
+    </style>
+
+    <!-- SCRIPTS -->
+    <script>
+        // --- 1. SETUP LENIS (SMOOTH SCROLL) ---
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            ScrollTrigger.update();
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // --- 2. ENTRY ANIMATION (Replaces Preloader) ---
+        window.addEventListener('load', () => {
+            const tl = gsap.timeline();
+
+            tl.from('.reveal-char-anim', {
+                y: "100%",
+                stagger: 0.1,
+                duration: 1,
+                ease: "power4.out",
+                delay: 0.2
+            })
+                .to('.reveal-text', { opacity: 1, y: 0, duration: 1, stagger: 0.2 }, "-=0.8");
+        });
+
+        // --- 3. STICKY SCROLL & COLOR CHANGE ---
+        const manifestoSection = document.querySelector('#manifesto');
+        const cards = document.querySelectorAll('.manifesto-card');
+
+        cards.forEach((card, i) => {
+            ScrollTrigger.create({
+                trigger: card,
+                start: "top center",
+                end: "bottom center",
+                onEnter: () => gsap.to(manifestoSection, { backgroundColor: card.dataset.color, duration: 0.5 }),
+                onEnterBack: () => gsap.to(manifestoSection, { backgroundColor: card.dataset.color, duration: 0.5 }),
+            });
+        });
+
+        // --- 4. HORIZONTAL SCROLL ---
+        const horizontalSection = document.querySelector('.horizontal-trigger');
+        const track = document.querySelector('.horizontal-track');
+
+        if (track) {
+            gsap.to(track, {
+                xPercent: -75, // Move 3 panels out of 4 (25% each)
+                ease: "none",
+                scrollTrigger: {
+                    trigger: horizontalSection,
+                    pin: true,
+                    scrub: 1,
+                    end: "+=3000" // Length of scroll
+                }
+            });
+        }
+
+        // --- 5. ACCORDION ---
+        const items = document.querySelectorAll('.accordion-header');
+        items.forEach(item => {
+            item.addEventListener('click', () => {
+                const content = item.nextElementSibling;
+                const icon = item.querySelector('span');
+
+                if (content.style.height) {
+                    gsap.to(content, { height: 0, duration: 0.3, ease: "power2.in" });
+                    gsap.to(icon, { rotation: 0, duration: 0.3 });
+                    content.style.height = null;
+                } else {
+                    gsap.to(content, { height: "auto", duration: 0.5, ease: "power2.out" });
+                    gsap.to(icon, { rotation: 45, duration: 0.3 });
+                }
+            });
+        });
+
+        // --- 6. BENTO TILT EFFECT ---
+        const tiltCards = document.querySelectorAll('.tilt-card');
+        tiltCards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = ((y - centerY) / centerY) * -5; // Max 5deg
+                const rotateY = ((x - centerX) / centerX) * 5;
+
+                gsap.to(card, { transformPerspective: 1000, rotateX: rotateX, rotateY: rotateY, scale: 1.02, duration: 0.2 });
+            });
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, { rotateX: 0, rotateY: 0, scale: 1, duration: 0.5, ease: "power2.out" });
+            });
+        });
+
+    </script>
+</body>
+
+</html>

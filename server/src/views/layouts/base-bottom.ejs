@@ -1,0 +1,18 @@
+<% if (Array.isArray(scripts)) { %>
+  <% scripts.forEach((script) => { %>
+    <% if (!script) { return; } %>
+    <% if (typeof script === 'string') { %>
+      <script defer src="<%= script %>"></script>
+    <% } else { %>
+      <script
+        <% if (script.defer !== false) { %>defer <% } %>
+        <% if (script.type) { %>type="<%= script.type %>" <% } %>
+        <% if (script.integrity) { %>integrity="<%= script.integrity %>" <% } %>
+        <% if (script.crossorigin) { %>crossorigin="<%= script.crossorigin %>" <% } %>
+        src="<%= script.src %>"></script>
+    <% } %>
+  <% }) %>
+<% } %>
+<%- typeof footerContent !== 'undefined' ? footerContent : '' %>
+</body>
+</html>

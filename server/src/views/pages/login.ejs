@@ -1,0 +1,68 @@
+<%- include('../layouts/base-top') %>
+<section class="auth-page">
+  <div class="auth-card">
+    <div class="auth-card__intro">
+      <p class="eyebrow">Smart Academic Mentor</p>
+      <h1>Log in or create your study profile</h1>
+      <p class="lead">Enter your details to save progress, sync dashboards, and unlock AI guidance tailored for you.</p>
+    </div>
+
+    <% if (success) { %>
+      <div class="auth-alert auth-alert--success" role="status">
+        <span><%= success %></span>
+      </div>
+    <% } %>
+
+    <% if (error) { %>
+      <div class="auth-alert auth-alert--error" role="alert">
+        <span><%= error %></span>
+      </div>
+    <% } %>
+
+    <form class="auth-form" method="POST" action="/login" novalidate>
+      <div class="auth-field">
+        <label for="auth-name">Full name</label>
+        <input
+          id="auth-name"
+          name="name"
+          type="text"
+          placeholder="Alex Scholar"
+          value="<%= formData && formData.name ? formData.name : '' %>"
+          required>
+      </div>
+      <div class="auth-field">
+        <label for="auth-email">Email</label>
+        <input
+          id="auth-email"
+          name="email"
+          type="email"
+          placeholder="you@example.com"
+          value="<%= formData && formData.email ? formData.email : '' %>"
+          required>
+      </div>
+      <div class="auth-field">
+        <label for="auth-password">Password</label>
+        <input
+          id="auth-password"
+          name="password"
+          type="password"
+          placeholder="At least 6 characters"
+          minlength="6"
+          required>
+      </div>
+      <button class="primary-button auth-submit" type="submit">
+        Save & Continue
+      </button>
+    </form>
+
+    <p class="auth-footnote">
+      By continuing you agree to store your information securely in MongoDB. No marketing emails, ever.
+    </p>
+    <div class="auth-links">
+      <a href="/index" class="link-button">Skip and explore the dashboard</a>
+      <a href="/" class="link-button">Back to Home</a>
+    </div>
+  </div>
+</section>
+
+<%- include('../layouts/base-bottom') %>

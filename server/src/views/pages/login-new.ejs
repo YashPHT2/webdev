@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Smart Mentor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/login-new.css">
+</head>
+
+<body>
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <header class="login-header animate-enter">
+                <h1 class="login-title">Welcome Back</h1>
+                <p class="login-subtitle">Sign in to continue your learning journey</p>
+            </header>
+
+            <% if (locals.error) { %>
+                <div class="alert alert-error animate-enter delay-1">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span>
+                        <%= error %>
+                    </span>
+                </div>
+                <% } %>
+
+                    <% if (locals.success) { %>
+                        <div class="alert alert-success animate-enter delay-1">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            <span>
+                                <%= success %>
+                            </span>
+                        </div>
+                        <% } %>
+
+                            <div class="auth-toggle animate-enter delay-1">
+                                <div class="toggle-bg"></div>
+                                <button type="button" class="toggle-btn active" data-type="login">Sign In</button>
+                                <button type="button" class="toggle-btn" data-type="signup">Sign Up</button>
+                            </div>
+
+                            <form class="login-form" action="/login-new" method="POST">
+                                <input type="hidden" name="authType" id="authType" value="login">
+
+                                <div class="form-group animate-enter delay-2" id="name-group" style="display: none;">
+                                    <input type="text" id="name" name="name" class="form-input" placeholder=" "
+                                        value="<%= locals.formData ? formData.name : '' %>">
+                                    <label for="name" class="form-label">Full Name</label>
+                                </div>
+
+                                <div class="form-group animate-enter delay-2">
+                                    <input type="email" id="email" name="email" class="form-input" placeholder=" "
+                                        value="<%= locals.formData ? formData.email : '' %>" required>
+                                    <label for="email" class="form-label">Email Address</label>
+                                </div>
+
+                                <div class="form-group animate-enter delay-3">
+                                    <input type="password" id="password" name="password" class="form-input"
+                                        placeholder=" " required minlength="6">
+                                    <label for="password" class="form-label">Password</label>
+                                </div>
+
+                                <button type="submit" class="submit-btn animate-enter delay-4" id="submit-btn">
+                                    Sign In
+                                </button>
+                            </form>
+
+                            <div class="login-footer animate-enter delay-5">
+                                <p id="footer-text">Don't have an account? <a href="#" id="toggle-link">Sign Up</a></p>
+                                <br>
+                                <a href="/">Back to Home</a>
+                            </div>
+        </div>
+    </div>
+
+    <script>
+        const toggleBtns = document.querySelectorAll('.toggle-btn');
+        const authTypeInput = document.getElementById('authType');
+        const nameGroup = document.getElementById('name-group');
+        const submitBtn = document.getElementById('submit-btn');
+        const footerText = document.getElementById('footer-text');
+        const toggleLink = document.getElementById('toggle-link');
+        const title = document.querySelector('.login-title');
+        const subtitle = document.querySelector('.login-subtitle');
+
+        function setMode(mode) {
+            // Update buttons
+            toggleBtns.forEach(btn => {
+                if (btn.dataset.type === mode) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+
+            // Update form state
+            authTypeInput.value = mode;
+
+            if (mode === 'signup') {
+                nameGroup.style.display = 'block';
+                document.getElementById('name').required = true;
+                submitBtn.textContent = 'Create Account';
+                title.textContent = 'Create Account';
+                subtitle.textContent = 'Start your learning journey today';
+                footerText.innerHTML = 'Already have an account? <a href="#" onclick="setMode(\'login\'); return false;">Sign In</a>';
+            } else {
+                nameGroup.style.display = 'none';
+                document.getElementById('name').required = false;
+                submitBtn.textContent = 'Sign In';
+                title.textContent = 'Welcome Back';
+                subtitle.textContent = 'Sign in to continue your learning journey';
+                footerText.innerHTML = 'Don\'t have an account? <a href="#" onclick="setMode(\'signup\'); return false;">Sign Up</a>';
+            }
+        }
+
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', () => setMode(btn.dataset.type));
+        });
+
+        toggleLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            const currentMode = authTypeInput.value;
+            setMode(currentMode === 'login' ? 'signup' : 'login');
+        });
+
+        // Initialize based on previous state if error occurred
+        <% if (locals.formData && locals.formData.authType === 'signup') { %>
+            setMode('signup');
+        <% } %>
+    </script>
+</body>
+
+</html>

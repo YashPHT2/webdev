@@ -1,0 +1,257 @@
+/* ========================================
+   FORCE CORRECT GRID LAYOUT - FINAL FIX
+======================================== */
+
+/* Force proper grid structure */
+.dashboard-grid {
+    display: grid !important;
+    grid-template-columns: repeat(12, 1fr) !important;
+    gap: var(--space-6) !important;
+}
+
+/* Progress Overview - Full width */
+.dashboard-card--progress {
+    grid-column: 1 / -1 !important;
+}
+
+/* Calendar (smaller) and Upcoming Events (larger) */
+.dashboard-card--calendar {
+    grid-column: span 4 !important;
+}
+
+.dashboard-card--upcoming {
+    grid-column: span 8 !important;
+}
+
+/* Today's Schedule (smaller) and All Tasks (larger) */
+.dashboard-card--timetable {
+    grid-column: span 4 !important;
+}
+
+.dashboard-card--tasks {
+    grid-column: span 8 !important;
+}
+
+/* Grade by Month (smaller) and Grade by Subject (larger) */
+.dashboard-card--grades-months {
+    grid-column: span 4 !important;
+}
+
+.dashboard-card--grades-subject {
+    grid-column: span 8 !important;
+}
+
+/* Assignment Tracker - Full width */
+.dashboard-card--assignments {
+    grid-column: 1 / -1 !important;
+}
+
+/* Tablet - 50/50 split */
+@media (max-width: 1199px) {
+    .dashboard-card--calendar,
+    .dashboard-card--upcoming,
+    .dashboard-card--timetable,
+    .dashboard-card--tasks,
+    .dashboard-card--grades-months,
+    .dashboard-card--grades-subject {
+        grid-column: span 6 !important;
+    }
+}
+
+/* Mobile - Full width */
+@media (max-width: 768px) {
+    .dashboard-card,
+    [class*="dashboard-card--"] {
+        grid-column: 1 / -1 !important;
+    }
+}
+
+/* ========================================
+   BEAUTIFUL PROGRESS GRAPH ENHANCEMENT
+======================================== */
+
+/* Style the card that holds the graph */
+.dashboard-card--progress {
+    background: linear-gradient(180deg, var(--surface) 0%, rgba(59, 130, 246, 0.03) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-card--progress::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 180px;
+    background: radial-gradient(ellipse at 50% -20%, rgba(59, 130, 246, 0.12), transparent 70%);
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+[data-theme="dark"] .dashboard-card--progress::before {
+    background: radial-gradient(ellipse at 50% -20%, rgba(59, 130, 246, 0.18), transparent 70%);
+}
+
+/* Adjust the card content padding */
+.dashboard-card--progress .dashboard-card__content {
+    padding: 1.5rem 2rem;
+}
+
+/* Style the graph container itself - SMALLER SIZE */
+.progress-graph {
+    height: 240px; /* Reduced from 320px */
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+/* Make sure canvas fits nicely */
+.progress-graph canvas {
+    max-height: 240px !important;
+}
+
+/* Enhanced Progress Summary */
+.progress-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    border-radius: 0.875rem;
+    margin-top: 0;
+}
+
+[data-theme="dark"] .progress-summary {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.progress-summary__item {
+    padding: 1rem;
+    text-align: center;
+    border-radius: 0.625rem;
+    background: rgba(255, 255, 255, 0.5);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+[data-theme="dark"] .progress-summary__item {
+    background: rgba(15, 23, 42, 0.4);
+}
+
+.progress-summary__item:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+    transform: translateY(-2px);
+}
+
+[data-theme="dark"] .progress-summary__item:hover {
+    background-color: rgba(59, 130, 246, 0.2);
+}
+
+.progress-summary__value {
+    font-size: 1.875rem; /* Reduced from 2.25rem */
+    font-weight: 800;
+    line-height: 1;
+    color: var(--primary-color);
+}
+
+.progress-summary__label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Icon indicators for summary items */
+.progress-summary__item:nth-child(1)::after {
+    content: '✓';
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(16, 185, 129, 0.15);
+    color: rgb(16, 185, 129);
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.progress-summary__item:nth-child(2)::after {
+    content: '⟳';
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(245, 158, 11, 0.15);
+    color: rgb(245, 158, 11);
+    border-radius: 50%;
+    font-size: 0.875rem;
+    font-weight: 800;
+}
+
+.progress-summary__item:nth-child(3)::after {
+    content: '★';
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(139, 92, 246, 0.15);
+    color: rgb(139, 92, 246);
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .progress-graph {
+        height: 200px;
+        padding: 0.75rem;
+    }
+    
+    .progress-graph canvas {
+        max-height: 200px !important;
+    }
+    
+    .progress-summary {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        padding: 1rem;
+    }
+    
+    .progress-summary__value {
+        font-size: 1.5rem;
+    }
+}
+
+/* Dark theme enhancements */
+[data-theme="dark"] .dashboard-card--progress {
+    background: linear-gradient(135deg, 
+        var(--surface) 0%, 
+        rgba(59, 130, 246, 0.05) 100%);
+}
+
+[data-theme="dark"] .progress-graph {
+    background: rgba(15, 23, 42, 0.3);
+}
+
+[data-theme="dark"] .progress-summary {
+    background: linear-gradient(135deg,
+        rgba(59, 130, 246, 0.12) 0%,
+        rgba(56, 189, 248, 0.12) 100%);
+    border-color: rgba(59, 130, 246, 0.25);
+}

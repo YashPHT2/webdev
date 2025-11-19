@@ -1,0 +1,8 @@
+[
+  { "id": "s1", "name": "Mathematics" },
+  { "id": "s2", "name": "Biology" },
+  { "id": "s3", "name": "Chemistry" },
+  { "id": "s4", "name": "Physics" },
+  { "id": "s5", "name": "English" },
+  { "id": "s6", "name": "History" }
+]

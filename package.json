@@ -1,0 +1,37 @@
+{
+  "name": "smart-academic-mentor",
+  "version": "1.0.0",
+  "description": "AI-powered academic mentoring chatbot with responsive, accessible front-end interface",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000"
+  },
+  "keywords": [
+    "chatbot",
+    "education",
+    "academic",
+    "mentor",
+    "ai",
+    "student",
+    "task-management",
+    "study-planner"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Mentor – Subjects</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="public/css/base.css" />
+  <link rel="stylesheet" href="public/css/layout.css" />
+  <link rel="stylesheet" href="public/css/components.css" />
+  <style>
+    .subjects-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-4); }
+    .subjects-container.subjects-container--list { display: block; }
+    .subject-card { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3); border: 1px solid var(--border-color); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-sm); transition: transform var(--transition-fast), box-shadow var(--transition-fast); }
+    .subject-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .subject-color { width: 10px; height: 40px; border-radius: 6px; flex-shrink: 0; }
+    .subject-content { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; }
+    .subject-title { font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .subject-meta { display: flex; gap: 8px; flex-wrap: wrap; color: var(--text-secondary); font-size: var(--font-size-sm); }
+    .badge { padding: 0.1rem 0.5rem; border-radius: 999px; border: 1px solid var(--border-color); background: var(--surface-subtle); font-size: 12px; }
+    .subject-actions { display: flex; gap: 6px; align-items: center; }
+    .subjects-container.subjects-container--list .subject-card { display: grid; grid-template-columns: 12px 1fr auto; gap: var(--space-3); }
+    .subject-link { color: var(--primary-color); text-decoration: underline; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar (same as dashboard) -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar__header">
+        <div class="sidebar__brand">
+          <svg class="sidebar__brand-icon" width="32" height="32" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+          </svg>
+          <div class="sidebar__brand-text">
+            <h1 class="sidebar__brand-title">Smart Mentor</h1>
+            <span class="sidebar__brand-subtitle">Academic Companion</span>
+          </div>
+        </div>
+        <button class="sidebar__toggle" id="sidebar-toggle" aria-label="Toggle sidebar" aria-expanded="true" aria-controls="sidebar">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <nav class="sidebar__nav">
+        <ul class="sidebar__nav-list" role="list">
+          <li class="sidebar__nav-item"><a href="index.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg><span>Dashboard</span></a></li>
+          <li class="sidebar__nav-item"><a href="assignments.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg><span>Assignments</span></a></li>
+          <li class="sidebar__nav-item"><a href="timetable.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg><span>Timetable</span></a></li>
+          <li class="sidebar__nav-item"><a href="progress.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg><span>Progress</span></a></li>
+          <li class="sidebar__nav-item"><a href="calendar.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><rect x="7" y="14" width="3" height="3"></rect></svg><span>Calendar</span></a></li>
+          <li class="sidebar__nav-item"><a href="subjects.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg><span>Subjects</span></a></li>
+          <li class="sidebar__nav-item"><a href="learning-path.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 3h18v4H3z"></path><path d="M7 7v14"></path></svg><span>Learning Path</span></a></li>
+          <li class="sidebar__nav-item"><a href="assessment.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="14" rx="2"></rect><path d="M7 7h10M7 11h6"></path></svg><span>Assessment</span></a></li>
+          <li class="sidebar__nav-item"><a href="analytics.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg><span>Analytics</span></a></li>
+          <li class="sidebar__nav-item"><a href="ai-mentor.html" class="sidebar__nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg><span>AI Mentor</span></a></li>
+        </ul>
+      </nav>
+      <div class="sidebar__footer">
+        <button class="sidebar__action-button chatbot-trigger-button" id="chatbot-trigger" aria-label="Open AI mentor chat">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <span>AI Mentor</span>
+          <span class="sidebar__notification-badge" id="chat-notification" aria-label="Unread messages"></span>
+        </button>
+        <div class="sidebar__user">
+          <div class="sidebar__user-avatar" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+          <div class="sidebar__user-info"><span class="sidebar__user-name">Student</span><span class="sidebar__user-role">Active</span></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main-wrapper">
+      <header class="dashboard-header" role="banner">
+        <div class="dashboard-header__content">
+          <div class="dashboard-header__title-section">
+            <h1 class="dashboard-header__title">Subjects</h1>
+            <p class="dashboard-header__subtitle" id="motivational-message">Track subjects and organize your learning.</p>
+          </div>
+          <div class="dashboard-header__actions">
+            <div class="progress-view-toggle" role="group" aria-label="View mode">
+              <button class="progress-view-toggle__button progress-view-toggle__button--active" data-view="grid" aria-pressed="true" id="subjects-view-grid">Grid</button>
+              <button class="progress-view-toggle__button" data-view="list" aria-pressed="false" id="subjects-view-list">List</button>
+            </div>
+            <button class="primary-button" id="add-subject" aria-label="Add new subject">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>New Subject</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="dashboard-content" role="main">
+        <div class="dashboard-grid">
+          <section class="dashboard-card" aria-labelledby="subjectsTitle">
+            <div class="dashboard-card__header">
+              <div class="dashboard-card__title-group">
+                <h2 class="dashboard-card__title" id="subjectsTitle">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                  Subjects
+                </h2>
+                <span class="dashboard-card__badge" id="subjects-count">—</span>
+              </div>
+              <button class="dashboard-card__action-button icon-button" id="refresh-subjects" aria-label="Refresh subjects">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+              </button>
+            </div>
+            <div class="dashboard-card__content">
+              <div id="subjects-container" class="subjects-container subjects-container--grid" role="list" aria-live="polite"></div>
+              <div id="subjects-empty" class="empty-state" hidden>
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                <h3>No subjects yet</h3>
+                <p>Start by creating your first subject. Use the button below.</p>
+                <button class="primary-button" id="empty-create-subject">Create Subject</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Chatbot and Modals copied to ensure functionality across pages -->
+  <button id="add-task-fab" aria-label="Add Task" title="Add Task">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    <span class="sr-only">Add Task</span>
+  </button>
+
+  <div id="chatbot-modal" class="chatbot-modal" role="dialog" aria-labelledby="chatbot-title" aria-modal="true" hidden>
+    <div class="chatbot-container chatbot-modal__container">
+      <div class="chatbot-header chatbot-modal__header">
+        <div class="chatbot-title-section chatbot-modal__title-section">
+          <div class="mentor-avatar chatbot-modal__avatar"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg></div>
+          <div><h2 id="chatbot-title">Smart Mentor</h2><span class="chatbot-status chatbot-modal__status">Online</span></div>
+        </div>
+        <div class="chatbot-header__actions">
+          <button id="reset-chat" class="icon-button chatbot-modal__reset-button" aria-label="Reset conversation"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg></button>
+          <button id="close-chatbot" class="close-button chatbot-modal__close-button" aria-label="Close chatbot"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+        </div>
+      </div>
+      <div id="chatbot-messages" class="chatbot-messages chatbot-modal__messages" role="log" aria-live="polite" aria-atomic="false"></div>
+      <div id="chat-aria-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+      <div class="chatbot-input-container chatbot-modal__input-container">
+        <div class="quick-actions" id="quick-actions">
+          <button class="quick-action-button" data-action="create-task"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>Create Task</button>
+          <button class="quick-action-button" data-action="study-plan"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>Study Plan</button>
+          <button class="quick-action-button" data-action="help"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>Help</button>
+        </div>
+        <form id="chatbot-form" class="chatbot-input-form chatbot-modal__form">
+          <textarea id="chatbot-input" class="chatbot-input chatbot-modal__input" placeholder="Type your message..." rows="1" aria-label="Chat message input" autocomplete="off"></textarea>
+          <button type="submit" id="send-button" class="send-button chatbot-modal__send-button" aria-label="Send message" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div id="chatbot-overlay" class="chatbot-overlay" hidden></div>
+
+  <!-- Task Modals (Add/Edit) minimal -->
+  <div id="task-modal-overlay" class="modal-overlay" hidden></div>
+  <div id="subjects-modal-overlay" class="modal-overlay" hidden></div>
+  <div id="task-form-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="task-form-title" hidden>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="task-form-title">Add Task</h2>
+        <button type="button" class="icon-button modal-close" data-close-modal="task-form-modal" aria-label="Close task form"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+      <form id="task-form" class="modal-form">
+        <input type="hidden" id="task-form-id">
+        <div class="form-group"><label for="task-form-title-input">Title</label><input id="task-form-title-input" name="title" type="text" required placeholder="Enter task title"></div>
+        <div class="form-group"><label for="task-form-description">Description</label><textarea id="task-form-description" name="description" rows="3" placeholder="Add details or requirements"></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label for="task-form-subject">Subject</label><input id="task-form-subject" name="subject" type="text" placeholder="e.g., Calculus"></div>
+          <div class="form-group"><label for="task-form-due-date">Due Date</label><input id="task-form-due-date" name="dueDate" type="date"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label for="task-form-priority">Priority</label><select id="task-form-priority" name="priority" required><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div>
+          <div class="form-group"><label for="task-form-progress">Progress</label><div class="progress-input"><input id="task-form-progress" name="progress" type="range" min="0" max="100" step="5" value="0"><span id="task-form-progress-value">0%</span></div></div>
+        </div>
+        <div class="modal-actions"><button type="button" class="secondary-button" data-close-modal="task-form-modal">Cancel</button><button type="submit" class="primary-button" id="task-form-submit">Save Task</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Day Detail Modal (stub) -->
+  <div id="day-detail-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="day-detail-title" hidden>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="day-detail-title">Day Summary</h2>
+        <button type="button" class="icon-button modal-close" data-close-modal="day-detail-modal" aria-label="Close day details"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+      <div class="modal-body"><p id="day-detail-date">—</p></div>
+      <div class="modal-actions"><button type="button" class="secondary-button" disabled>Add Event (stub)</button><button type="button" class="primary-button" data-close-modal="day-detail-modal">Close</button></div>
+    </div>
+  </div>
+
+  <!-- Subject Form Modal -->
+  <div id="subject-form-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="subject-form-title" hidden>
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2 id="subject-form-title">Add Subject</h2>
+          <p class="modal-subtitle" id="subject-form-subtitle">Create and color-code a subject</p>
+        </div>
+        <button type="button" class="icon-button modal-close" data-close-modal="subject-form-modal" aria-label="Close subject form"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+      <form id="subject-form" class="modal-form">
+        <input type="hidden" id="subject-id">
+        <div class="form-group"><label for="subject-name">Name</label><input id="subject-name" name="name" type="text" required placeholder="e.g., Mathematics" /></div>
+        <div class="form-group"><label for="subject-color">Color</label><input id="subject-color" name="color" type="color" value="#3b82f6" /></div>
+        <div class="modal-actions"><button type="button" class="secondary-button" data-close-modal="subject-form-modal">Cancel</button><button type="submit" class="primary-button" id="subject-save">Save Subject</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Subject Delete Modal -->
+  <div id="subject-delete-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="subject-delete-title" hidden>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="subject-delete-title">Delete Subject</h2>
+        <button type="button" class="icon-button modal-close" data-close-modal="subject-delete-modal" aria-label="Close delete dialog"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete <strong id="subject-delete-name">this subject</strong>? This will not remove existing tasks but they will become uncategorized.</p>
+      </div>
+      <div class="modal-actions"><button type="button" class="secondary-button" data-close-modal="subject-delete-modal">Cancel</button><button type="button" class="danger-button" id="confirm-delete-subject">Delete</button></div>
+    </div>
+  </div>
+
+  <script src="public/js/api.js"></script>
+  <script src="public/js/chatbot.js"></script>
+  <script src="script.js"></script>
+  <script src="public/js/modules/utils.js"></script>
+  <script src="public/js/modules/nav.js"></script>
+  <script src="public/js/modules/main.js"></script>
+  <script src="public/js/modules/subjects.js"></script>
+</body>
+</html>

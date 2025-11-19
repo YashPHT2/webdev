@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "title": "Complete Math Assignment",
+    "description": "Solve problems 1-20 from Chapter 5",
+    "subject": "Mathematics",
+    "dueDate": "2025-10-26T00:00:00.000Z",
+    "priority": "High",
+    "urgency": "high",
+    "difficulty": "moderate",
+    "status": "pending",
+    "estimatedDuration": 120
+  },
+  {
+    "id": "2",
+    "title": "Read Biology Chapter",
+    "description": "Read and take notes on Chapter 3",
+    "subject": "Biology",
+    "dueDate": "2025-10-22T00:00:00.000Z",
+    "priority": "Medium",
+    "urgency": "medium",
+    "difficulty": "easy",
+    "status": "pending",
+    "estimatedDuration": 90
+  }
+]

@@ -1,0 +1,215 @@
+/* Base styles: CSS variables, resets, theming, accessibility, and global utilities (student-first redesign) */
+
+:root {
+    /* Fonts */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+    /* Typography scale */
+    --font-size-xs: 0.75rem;   /* 12px */
+    --font-size-sm: 0.875rem;  /* 14px */
+    --font-size-base: 1rem;     /* 16px */
+    --font-size-lg: 1.125rem;  /* 18px */
+    --font-size-xl: 1.25rem;   /* 20px */
+    --font-size-2xl: 1.5rem;   /* 24px */
+
+    /* Spacing */
+    --space-0: 0;
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;     /* 24px */
+    --space-7: 2rem;       /* 32px */
+    --space-8: 2.5rem;     /* 40px */
+    --space-9: 3rem;       /* 48px */
+    --space-10: 4rem;      /* 64px */
+
+    /* Radii */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-2xl: 1.5rem;
+
+    /* Colors (light default) */
+    --primary-color: #3b82f6;   /* Primary accent (vibrant blue) */
+    --primary-hover: #2563eb;
+    --secondary-color: #38bdf8; /* Secondary accent (sky) */
+    --success-color: #16a34a;   /* Success */
+    --warning-color: #f59e0b;   /* Warning */
+    --danger-color: #ef4444;    /* Danger */
+    --muted-color: #64748b;     /* Muted */
+
+    --background: #f8fafc;      /* Background (light gray) */
+    --surface: #ffffff;         /* Card surface (white) */
+    --surface-elevated: #ffffff;
+    --surface-subtle: #f1f5f9;
+
+    --text-primary: #1e293b;    /* Text (dark slate) */
+    --text-secondary: #64748b;
+    --text-tertiary: #94a3b8;
+
+    --border-color: #e2e8f0;    /* Border */
+    --border-color-strong: #cbd5e1;
+    --border-color-hover: #94a3b8;
+
+    /* Accent helpers */
+    --primary-soft-bg: rgba(59, 130, 246, 0.12);
+    --selection-bg: rgba(59, 130, 246, 0.20);
+
+    /* Focus ring */
+    --focus-ring-color: var(--primary-color);
+    --focus-ring-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+
+    /* Overlays & glass */
+    --overlay-backdrop: rgba(0, 0, 0, 0.45);
+    --overlay-blur: 8px;
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(17, 24, 39, 0.10);
+    --glass-blur: 16px;
+    --glass-saturate: 180%;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+    /* Layout tokens */
+    --sidebar-width: 256px;
+    --sidebar-collapsed-width: 80px;
+
+    /* Z-index scale */
+    --z-base: 0;
+    --z-overlay: 900;
+    /* Overlays and layers ordered from low to high */
+    --z-chat-overlay: 1190;  /* Chat backdrop sits behind chat */
+    --z-chat: 1200;          /* AI mentor panel */
+    --z-modal-overlay: 1300; /* Modal backdrop above chat */
+    --z-modal: 1310;         /* Topmost modal layer */
+    --z-sidebar: 1100;       /* Mobile sidebar */
+
+    /* Motion tokens (durations and easings) */
+    --motion-duration-100: 120ms;
+    --motion-duration-150: 180ms;
+    --motion-duration-200: 220ms;
+    --motion-duration-250: 260ms;
+    --motion-duration-300: 320ms;
+    --motion-duration-350: 380ms;
+    --motion-duration-400: 440ms;
+    --motion-duration-450: 520ms;
+
+    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+    --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+    --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+    --ease-spring-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    /* Legacy transition aliases */
+    --transition-fast: var(--motion-duration-150) var(--ease-standard);
+    --transition-normal: var(--motion-duration-250) var(--ease-standard);
+    --transition-slow: var(--motion-duration-350) var(--ease-standard);
+
+    /* Timetable tokens */
+    --timetable-card-max-height: 68vh; /* expands until this height, then scrolls internally */
+    --timetable-grid-min-height: 420px; /* ensures larger per-day boxes */
+    --timetable-col-gap: var(--space-5); /* breathing room between days */
+    --timetable-day-padding: var(--space-4);
+    --timetable-day-header-padding: var(--space-4) var(--space-5);
+}
+
+/********************************************
+ Dark theme
+********************************************/
+[data-theme="dark"] {
+    --background: #0a0a0a;
+    --surface: #0f0f0f;
+    --surface-elevated: #171717;
+    --surface-subtle: #141414;
+
+    --text-primary: #f5f5f5;
+    --text-secondary: #a3a3a3;
+    --text-tertiary: #737373;
+
+    --border-color: #262626;
+    --border-color-strong: #333333;
+    --border-color-hover: #3f3f46;
+
+    /* Accent helpers */
+    --primary-soft-bg: rgba(59, 130, 246, 0.20);
+    --selection-bg: rgba(59, 130, 246, 0.25);
+
+    /* Focus ring */
+    --focus-ring-color: #60a5fa;
+    --focus-ring-shadow: 0 0 0 3px rgba(96, 165, 250, 0.35);
+
+    /* Overlays & glass */
+    --overlay-backdrop: rgba(0, 0, 0, 0.6);
+    --overlay-blur: 8px;
+    --glass-bg: rgba(16, 16, 16, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-blur: 16px;
+    --glass-saturate: 160%;
+
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.25);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.35), 0 2px 4px -2px rgb(0 0 0 / 0.35);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.45), 0 4px 6px -4px rgb(0 0 0 / 0.45);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+}
+
+/* Reset and base element styles */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    min-height: 100vh;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-base);
+    background-color: var(--background);
+    color: var(--text-primary);
+    line-height: 1.6;
+    transition: background-color var(--transition-normal), color var(--transition-normal);
+    position: relative;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 { font-weight: 700; line-height: 1.2; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; border: none; background: none; cursor: pointer; color: inherit; }
+button:disabled { cursor: not-allowed; opacity: 0.6; }
+
+:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+::selection { background: var(--selection-bg); }
+img, svg { display: block; max-width: 100%; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+
+/* Skip link for keyboard users */
+.skip-link { position: absolute; left: -999px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+.skip-link:focus { left: 1rem; top: 1rem; width: auto; height: auto; padding: var(--space-2) var(--space-3); background: var(--surface); color: var(--text-primary); border: 2px solid var(--focus-ring-color); border-radius: var(--radius-md); z-index: 9999; }
+
+/* Page entrance transitions */
+.js-animate .app-container { opacity: 0; transform: translateY(6px); }
+.js-animate.page-ready .app-container { opacity: 1; transform: translateY(0); transition: opacity var(--motion-duration-300) var(--ease-decelerate), transform var(--motion-duration-400) var(--ease-decelerate); will-change: opacity, transform; }
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

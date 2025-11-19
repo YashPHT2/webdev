@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Mentor – Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="public/css/base.css">
+    <link rel="stylesheet" href="public/css/layout.css">
+    <link rel="stylesheet" href="public/css/components.css">
+    <link rel="stylesheet" href="public/css/dashboard-enhanced.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
+            <div class="sidebar__header">
+                <div class="sidebar__brand">
+                    <svg class="sidebar__brand-icon" width="32" height="32" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                    </svg>
+                    <div class="sidebar__brand-text">
+                        <h1 class="sidebar__brand-title">Smart Mentor</h1>
+                        <span class="sidebar__brand-subtitle">Academic Companion</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar__nav">
+                <ul class="sidebar__nav-list" role="list">
+                    <li class="sidebar__nav-item">
+                        <a href="index.html" class="sidebar__nav-link sidebar__nav-link--active" aria-current="page">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar__nav-item">
+                        <a href="assignments.html" class="sidebar__nav-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            <span>Assignments</span>
+                        </a>
+                    </li>
+                    <li class="sidebar__nav-item">
+                        <a href="timetable.html" class="sidebar__nav-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <span>Timetable</span>
+                        </a>
+                    </li>
+                    <li class="sidebar__nav-item">
+                        <a href="progress.html" class="sidebar__nav-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line>
+                            </svg>
+                            <span>Progress</span>
+                        </a>
+                    </li>
+                    <li class="sidebar__nav-item">
+                        <a href="calendar.html" class="sidebar__nav-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><rect x="7" y="14" width="3" height="3"></rect>
+                            </svg>
+                            <span>Calendar</span>
+                        </a>
+                    </li>
+                    <li class="sidebar__nav-item">
+                        <a href="subjects.html" class="sidebar__nav-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                            <span>Subjects</span>
+                        </a>
+                    </li>
+                    <li class="sidebar__nav-item">
+                        <a href="learning-path.html" class="sidebar__nav-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 3h18v4H3z"></path><path d="M7 7v14"></path></svg>
+                            <span>Learning Path</span>
+                        </a>
+                    </li>
+                    <li class="sidebar__nav-item">
+                        <a href="assessment.html" class="sidebar__nav-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="14" rx="2"></rect><path d="M7 7h10M7 11h6"></path></svg>
+                            <span>Assessment</span>
+                        </a>
+                    </li>
+                    <li class="sidebar__nav-item">
+                        <a href="analytics.html" class="sidebar__nav-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                            <span>Analytics</span>
+                        </a>
+                    </li>
+                    <li class="sidebar__nav-item">
+                        <a href="ai-mentor.html" class="sidebar__nav-link" id="nav-ai-mentor">
+                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                            <span>AI Mentor</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar__footer">
+                <button class="sidebar__action-button" id="chatbot-trigger" aria-label="Open AI mentor chat">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <span>AI Mentor</span>
+                    <span class="notification-badge" id="chat-notification" aria-label="Unread messages"></span>
+                </button>
+                <div class="sidebar__user">
+                    <div class="sidebar__user-avatar" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <div class="sidebar__user-info">
+                        <span class="sidebar__user-name">Student</span>
+                        <span class="sidebar__user-role">Active</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-wrapper">
+            <header class="dashboard-header" role="banner">
+                <div class="dashboard-header__content">
+                    <div class="dashboard-header__title-section">
+                        <button class="icon-button sidebar__toggle" id="sidebar-toggle" aria-label="Toggle sidebar" aria-expanded="false" aria-controls="sidebar">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        </button>
+                        <div>
+                            <h1 class="dashboard-header__title">Dashboard</h1>
+                            <p class="dashboard-header__subtitle motivational-message" id="motivational-message">Consistency is key to success! 🎯</p>
+                        </div>
+                    </div>
+                    <div class="dashboard-header__actions">
+                        <div class="progress-view-toggle" role="group" aria-label="Period selector">
+                            <button class="progress-view-toggle__button progress-view-toggle__button--active" data-view="weekly" aria-pressed="true">Weekly</button>
+                            <button class="progress-view-toggle__button" data-view="monthly" aria-pressed="false">Monthly</button>
+                            <button class="progress-view-toggle__button" data-view="yearly" aria-pressed="false">Yearly</button>
+                        </div>
+                        <button class="icon-button" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        </button>
+                        <button class="icon-button" id="notificationsButton" aria-label="View notifications" title="Notifications">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                            <span class="dashboard-header__notification-dot" aria-hidden="true"></span>
+                        </button>
+                        <button class="primary-button" id="add-task" aria-label="Add new task">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            <span>Add Task</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <main class="dashboard-content" role="main" id="main-content">
+                <section class="kpi-grid" role="region" aria-label="Key performance indicators">
+                    <div class="kpi-card" data-kpi="completed" tabindex="0">
+                        <div class="kpi-content"><div class="kpi-label">Completed</div><div class="kpi-value" id="kpi-completed">12</div></div>
+                    </div>
+                    <div class="kpi-card" data-kpi="in-progress" tabindex="0">
+                        <div class="kpi-content"><div class="kpi-label">In Progress</div><div class="kpi-value" id="kpi-inprogress">5</div></div>
+                    </div>
+                    <div class="kpi-card" data-kpi="avg-score" tabindex="0">
+                        <div class="kpi-content"><div class="kpi-label">Avg Score</div><div class="kpi-value" id="kpi-avgscore">87%</div></div>
+                    </div>
+                    <div class="kpi-card" data-kpi="time-spent" tabindex="0">
+                        <div class="kpi-donut" style="--kpi-progress: 65%" aria-hidden="true"></div>
+                        <div class="kpi-content"><div class="kpi-label">Time Spent</div><div class="kpi-value" id="kpi-timespent">4.5h</div></div>
+                    </div>
+                </section>
+
+                <div class="dashboard-grid">
+                    <section class="dashboard-card dashboard-card--assignments" id="assignmentTracker" aria-labelledby="assignmentTrackerTitle" data-component="assignment-tracker">
+                        <div class="dashboard-card__header">
+                            <div class="dashboard-card__title-group">
+                                <h2 class="dashboard-card__title" id="assignmentTrackerTitle">Assignment Tracker</h2>
+                                <span class="dashboard-card__badge" data-count="assignments">3 Active</span>
+                            </div>
+                            <button class="icon-button" data-action="filter-assignments" aria-label="Filter assignments">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                            </button>
+                        </div>
+                        <div class="dashboard-card__content" style="padding: 0 1.25rem 1.25rem;">
+                            <div id="priority-task-list" class="assignment-list" role="list" data-assignments-container>
+                                <!-- JS will render priority tasks here -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="dashboard-card dashboard-card--progress" id="progressGraph" aria-labelledby="progressGraphTitle" data-component="progress-graph">
+                        <div class="dashboard-card__header">
+                            <h2 class="dashboard-card__title" id="progressGraphTitle">Progress Overview</h2>
+                        </div>
+                        <div class="dashboard-card__content">
+                            <div class="progress-graph" data-graph-container style="height: 200px;">
+                                <canvas id="progressGraphCanvas" class="progress-graph__canvas" role="img" aria-label="Line graph showing weekly progress"></canvas>
+                            </div>
+                            <div class="progress-summary">
+                                <!-- JS will render summary here -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="dashboard-card dashboard-card--calendar" id="calendarSection" aria-labelledby="calendarTitle" data-component="calendar">
+                        <div class="dashboard-card__header">
+                            <div class="dashboard-card__title-group">
+                                <h2 class="dashboard-card__title" id="calendarTitle">Calendar</h2>
+                                <span class="dashboard-card__badge" data-current-month>October 2024</span>
+                            </div>
+                            <div class="calendar-nav">
+                                <button class="calendar-nav__button icon-button" data-calendar-nav="prev" aria-label="Previous month"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                                <button class="calendar-nav__button icon-button" data-calendar-nav="next" aria-label="Next month"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+                            </div>
+                        </div>
+                        <div class="dashboard-card__content">
+                            <div class="calendar" data-calendar-container>
+                                <div class="calendar__weekdays"><div role="columnheader">Sun</div><div role="columnheader">Mon</div><div role="columnheader">Tue</div><div role="columnheader">Wed</div><div role="columnheader">Thu</div><div role="columnheader">Fri</div><div role="columnheader">Sat</div></div>
+                                <div class="calendar__days" role="grid" data-calendar-days></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="dashboard-card dashboard-card--upcoming" id="upcomingEvents" aria-labelledby="upcomingEventsTitle" data-component="upcoming-events">
+                        <div class="dashboard-card__header"><h2 class="dashboard-card__title" id="upcomingEventsTitle">Upcoming Events</h2></div>
+                        <div class="dashboard-card__content">
+                            <div class="calendar-events" data-calendar-events>
+                                <div class="calendar-events__list" id="upcoming-events-list" role="list"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="dashboard-card dashboard-card--timetable" id="timetableSection" aria-labelledby="timetableTitle" data-component="timetable">
+                        <div class="dashboard-card__header">
+                            <div class="dashboard-card__title-group">
+                                <h2 class="dashboard-card__title" id="timetableTitle">Today's Schedule</h2>
+                                <span class="dashboard-card__badge" data-current-day>Wednesday</span>
+                            </div>
+                            <button class="icon-button" data-action="edit-timetable" aria-label="Edit timetable"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
+                        </div>
+                        <div class="dashboard-card__content">
+                            <div class="timetable" data-timetable-container><div class="timetable__schedule" role="table" aria-label="Today's class schedule"></div></div>
+                        </div>
+                    </section>
+                    
+                    <section class="dashboard-card dashboard-card--tasks" id="taskListSection" aria-labelledby="taskListTitle" data-component="task-list">
+                        <div class="dashboard-card__header">
+                             <h2 class="dashboard-card__title" id="taskListTitle">All Tasks</h2>
+                             <button class="icon-button" id="refresh-tasks" data-action="refresh-tasks" aria-label="Refresh task list"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg></button>
+                        </div>
+                        <div class="dashboard-card__content">
+                            <div id="task-list" role="list" class="assignment-list" data-task-list-container></div>
+                        </div>
+                    </section>
+                    
+                    <section class="dashboard-card dashboard-card--grades-months" aria-labelledby="gradesMonthsTitle">
+                        <div class="dashboard-card__header"><h2 class="dashboard-card__title" id="gradesMonthsTitle">Grade by Months</h2></div>
+                        <div class="dashboard-card__content">
+                            <div class="time-chart" style="height:200px; display:grid; place-items:center; color: var(--text-secondary);"><span>Line chart placeholder</span></div>
+                        </div>
+                    </section>
+
+                    <section class="dashboard-card dashboard-card--grades-subject" aria-labelledby="gradesSubjectTitle">
+                        <div class="dashboard-card__header"><h2 class="dashboard-card__title" id="gradesSubjectTitle">Grade by Subject</h2></div>
+                        <div class="dashboard-card__content">
+                            <div role="list" aria-label="Subject grades" style="display:flex; flex-direction:column; gap:1rem;">
+                                <div><div style="display:flex; justify-content:space-between; font-size: var(--font-size-sm); margin-bottom:0.5rem;"><span>Mathematics</span><span style="font-weight:600;">88%</span></div><div class="progress-bar"><div class="progress-bar-fill" style="width:88%"></div></div></div>
+                                <div><div style="display:flex; justify-content:space-between; font-size: var(--font-size-sm); margin-bottom:0.5rem;"><span>Science</span><span style="font-weight:600;">74%</span></div><div class="progress-bar"><div class="progress-bar-fill" style="width:74%"></div></div></div>
+                                <div><div style="display:flex; justify-content:space-between; font-size: var(--font-size-sm); margin-bottom:0.5rem;"><span>History</span><span style="font-weight:600;">81%</span></div><div class="progress-bar"><div class="progress-bar-fill" style="width:81%"></div></div></div>
+                                <div><div style="display:flex; justify-content:space-between; font-size: var(--font-size-sm); margin-bottom:0.5rem;"><span>English</span><span style="font-weight:600;">92%</span></div><div class="progress-bar"><div class="progress-bar-fill" style="width:92%"></div></div></div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add Task FAB (mobile) -->
+    <button id="add-task-fab" aria-label="Add Task" title="Add Task">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+    </button>
+
+    <!-- Chatbot Modal -->
+    <div id="chatbot-modal" class="chatbot-modal" role="dialog" aria-labelledby="chatbot-title" aria-modal="true" hidden>
+        <div class="chatbot-container">
+            <div class="chatbot-header">
+                <div class="chatbot-title-section">
+                    <div class="mentor-avatar"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg></div>
+                    <div><h2 id="chatbot-title">Smart Mentor</h2><span class="chatbot-status">Online</span></div>
+                </div>
+                <div class="chatbot-header__actions">
+                    <button id="reset-chat" class="icon-button" aria-label="Reset conversation"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg></button>
+                    <button id="close-chatbot" class="close-button" aria-label="Close chatbot"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                </div>
+            </div>
+            <div id="chatbot-messages" class="chatbot-messages" role="log" aria-live="polite" aria-atomic="false"></div>
+            <div id="chat-aria-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+            <div class="chatbot-input-container">
+                <div class="quick-actions" id="quick-actions">
+                    <button class="quick-action-button" data-action="create-task"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>Create Task</button>
+                    <button class="quick-action-button" data-action="study-plan"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>Study Plan</button>
+                    <button class="quick-action-button" data-action="help"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>Help</button>
+                </div>
+                <form id="chatbot-form" class="chatbot-input-form">
+                    <textarea id="chatbot-input" class="chatbot-input" placeholder="Type your message..." rows="1" aria-label="Chat message input" autocomplete="off"></textarea>
+                    <button type="submit" id="send-button" class="send-button" aria-label="Send message" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="chatbot-overlay" class="chatbot-overlay" hidden></div>
+    <button id="chatbot-fab" class="chatbot-fab" aria-label="Open AI mentor chat" title="Chat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></button>
+    
+    <!-- Task Management Modals -->
+    <div id="task-modal-overlay" class="modal-overlay" hidden></div>
+    <div id="task-form-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="task-form-title" hidden>
+        <div class="modal-content"><div class="modal-header"><h2 id="task-form-title">Add Task</h2><button type="button" class="icon-button modal-close" data-close-modal="task-form-modal" aria-label="Close task form"><svg width="20" height="20" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><form id="task-form" class="modal-form"><input type="hidden" id="task-form-id"><div class="form-group"><label for="task-form-title-input">Title</label><input id="task-form-title-input" name="title" type="text" required></div><div class="form-group"><label for="task-form-description">Description</label><textarea id="task-form-description" name="description" rows="3"></textarea></div><div class="form-row"><div class="form-group"><label for="task-form-subject">Subject</label><input id="task-form-subject" name="subject" type="text"></div><div class="form-group"><label for="task-form-due-date">Due Date</label><input id="task-form-due-date" name="dueDate" type="date"></div></div><div class="form-row"><div class="form-group"><label for="task-form-priority">Priority</label><select id="task-form-priority" name="priority" required><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div><div class="form-group"><label for="task-form-progress">Progress</label><div class="progress-input"><input id="task-form-progress" name="progress" type="range" min="0" max="100" step="5" value="0"><span id="task-form-progress-value">0%</span></div></div></div><div class="modal-actions"><button type="button" class="secondary-button" data-close-modal="task-form-modal">Cancel</button><button type="submit" class="primary-button" id="task-form-submit">Save Task</button></div></form></div>
+    </div>
+    <div id="task-detail-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="task-detail-title" hidden><div class="modal-content"><div class="modal-header"><div><h2 id="task-detail-title">Task Details</h2><p id="task-detail-subtitle" class="modal-subtitle"></p></div><button type="button" class="icon-button modal-close" data-close-modal="task-detail-modal"><svg width="20" height="20" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="task-detail-body"><div class="task-detail-top"><div id="task-detail-priority" class="priority-badge">High</div><div class="task-detail-progress"><span>Progress</span><div class="progress-bar"><div id="task-detail-progress-bar" class="progress-bar-fill"></div></div><span id="task-detail-progress-value" class="progress-value">0%</span></div></div><div class="task-detail-content"><h3 id="task-detail-name"></h3><p id="task-detail-description"></p></div><div class="task-detail-meta"><div class="meta-item"><span class="meta-label">Subject</span><span id="task-detail-subject" class="meta-value">—</span></div><div class="meta-item"><span class="meta-label">Due Date</span><span id="task-detail-due-date" class="meta-value">—</span></div><div class="meta-item"><span class="meta-label">Last Updated</span><span id="task-detail-updated" class="meta-value">—</span></div></div></div><div class="modal-actions modal-actions-stack"><button type="button" class="secondary-button" id="edit-task-action">Edit Task</button><button type="button" class="secondary-button" id="override-priority-action">Override Priority</button><button type="button" class="danger-button" id="delete-task-action">Delete Task</button></div></div></div>
+    <div id="delete-confirm-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="delete-confirm-title" hidden><div class="modal-content"><div class="modal-header"><h2 id="delete-confirm-title">Delete Task</h2><button type="button" class="icon-button modal-close" data-close-modal="delete-confirm-modal"><svg width="20" height="20" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="modal-body"><p>Are you sure you want to delete this task? This action cannot be undone.</p></div><div class="modal-actions"><button type="button" class="secondary-button" data-close-modal="delete-confirm-modal">Cancel</button><button type="button" class="danger-button" id="confirm-delete-task">Delete Task</button></div></div></div>
+    <div id="priority-override-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="priority-override-title" hidden><div class="modal-content"><div class="modal-header"><h2 id="priority-override-title">Override Task Priority</h2><button type="button" class="icon-button modal-close" data-close-modal="priority-override-modal"><svg width="20" height="20" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><form id="priority-override-form" class="modal-form"><input type="hidden" id="priority-override-task-id"><div class="form-group"><label for="priority-override-select">New Priority</label><select id="priority-override-select" required><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div><div class="form-group"><label for="priority-override-reason">Reason (optional)</label><textarea id="priority-override-reason" rows="3"></textarea></div><div class="modal-actions"><button type="button" class="secondary-button" data-close-modal="priority-override-modal">Cancel</button><button type="submit" class="primary-button">Apply Override</button></div></form></div></div>
+    <div id="day-detail-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="day-detail-title" hidden><div class="modal-content"><div class="modal-header"><h2 id="day-detail-title">Day Summary</h2><button type="button" class="icon-button modal-close" data-close-modal="day-detail-modal"><svg width="20" height="20" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="modal-body"><p id="day-detail-date">—</p></div><div class="modal-actions"><button type="button" class="secondary-button" disabled>Add Event (stub)</button><button type="button" class="primary-button" data-close-modal="day-detail-modal">Close</button></div></div></div>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script defer src="public/js/api.js"></script>
+    <script defer src="public/js/chatbot.js"></script>
+    <script defer src="script.js"></script>
+    <!-- REMOVED CONFLICTING SCRIPTS -->
+</body>
+</html>
